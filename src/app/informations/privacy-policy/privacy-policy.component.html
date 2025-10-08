@@ -1,1 +1,325 @@
-<p>privacy-policy works!</p>
+<!-- privacy-policy.component.html -->
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-6xl mx-auto">
+    
+    <!-- Header Section -->
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">Privacy Policy</h1>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 text-lg text-gray-600">
+        <div class="flex items-center gap-2">
+          <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <span>Last Updated: {{ lastUpdated }}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>Effective: {{ effectiveDate }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      
+      <!-- Table of Contents -->
+      <div class="lg:col-span-1">
+        <div class="bg-white rounded-2xl shadow-lg p-6 sticky top-8">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Table of Contents</h3>
+          <nav class="space-y-2 max-h-[calc(100vh-200px)] overflow-y-auto">
+            <button
+              *ngFor="let section of policySections"
+              (click)="scrollToSection(section.id)"
+              class="w-full text-left p-3 rounded-xl transition-all duration-300 hover:bg-blue-50 hover:text-blue-700"
+              [class.bg-blue-50]="activeSection() === section.id"
+              [class.text-blue-700]="activeSection() === section.id"
+              [class.text-gray-700]="activeSection() !== section.id">
+              <span class="font-medium text-sm">{{ section.title }}</span>
+            </button>
+          </nav>
+
+          <!-- Quick Actions -->
+          <div class="mt-8 pt-6 border-t border-gray-200">
+            <div class="space-y-3">
+              <button
+                (click)="scrollToSection('your-rights')"
+                class="w-full flex items-center gap-3 p-3 text-gray-600 hover:text-blue-600 transition-colors duration-300">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+                <span class="text-sm font-medium">Your Privacy Rights</span>
+              </button>
+              
+              <button class="w-full flex items-center gap-3 p-3 text-gray-600 hover:text-blue-600 transition-colors duration-300">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span class="text-sm font-medium">Download PDF</span>
+              </button>
+
+              <button
+                (click)="scrollToSection('contact-us')"
+                class="w-full flex items-center gap-3 p-3 text-gray-600 hover:text-blue-600 transition-colors duration-300">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <span class="text-sm font-medium">Contact Privacy Team</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Policy Content -->
+      <div class="lg:col-span-3">
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+          
+          <!-- Important Notice -->
+          <div class="bg-blue-50 border-b border-blue-200 p-6">
+            <div class="flex items-start gap-4">
+              <svg class="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              <div>
+                <h3 class="text-lg font-semibold text-blue-900 mb-2">Your Privacy Matters</h3>
+                <p class="text-blue-800 text-sm">
+                  We are committed to protecting your personal information and being transparent about how we collect, use, and share your data. This Privacy Policy explains our practices and your rights regarding your personal information.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Policy Sections -->
+          <div class="p-8">
+            <div class="prose prose-lg max-w-none">
+              
+              <!-- Introduction -->
+              <section id="introduction" class="scroll-mt-24 mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 pb-3 border-b border-gray-200">1. Introduction</h2>
+                <div class="space-y-4 text-gray-700 leading-relaxed">
+                  <p *ngFor="let paragraph of policySections[0].content" class="text-gray-700">
+                    {{ paragraph }}
+                  </p>
+                </div>
+              </section>
+
+              <!-- Information We Collect -->
+              <section id="information-collection" class="scroll-mt-24 mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 pb-3 border-b border-gray-200">2. Information We Collect</h2>
+                <div class="space-y-4 text-gray-700 leading-relaxed">
+                  <p *ngFor="let paragraph of policySections[1].content" class="text-gray-700">
+                    {{ paragraph }}
+                  </p>
+                  
+                  <div *ngFor="let subsection of policySections[1].subsections" class="ml-4 mt-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">{{ subsection.title }}</h3>
+                    <ul class="space-y-2 text-gray-700">
+                      <li *ngFor="let item of subsection.content" class="flex items-start gap-2">
+                        <span *ngIf="item.startsWith('•')" class="flex-shrink-0 mt-1">•</span>
+                        <span>{{ item.startsWith('•') ? item.substring(2) : item }}</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </section>
+
+              <!-- How We Use Your Information -->
+              <section id="how-we-use" class="scroll-mt-24 mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 pb-3 border-b border-gray-200">3. How We Use Your Information</h2>
+                <div class="space-y-4 text-gray-700 leading-relaxed">
+                  <p *ngFor="let paragraph of policySections[2].content" class="text-gray-700">
+                    {{ paragraph }}
+                  </p>
+                  
+                  <div *ngFor="let subsection of policySections[2].subsections" class="ml-4 mt-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">{{ subsection.title }}</h3>
+                    <ul class="space-y-2 text-gray-700">
+                      <li *ngFor="let item of subsection.content" class="flex items-start gap-2">
+                        <span *ngIf="item.startsWith('•')" class="flex-shrink-0 mt-1">•</span>
+                        <span>{{ item.startsWith('•') ? item.substring(2) : item }}</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Information Sharing and Disclosure -->
+              <section id="information-sharing" class="scroll-mt-24 mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 pb-3 border-b border-gray-200">4. Information Sharing and Disclosure</h2>
+                <div class="space-y-4 text-gray-700 leading-relaxed">
+                  <p *ngFor="let paragraph of policySections[3].content" class="text-gray-700">
+                    {{ paragraph }}
+                  </p>
+                  
+                  <div *ngFor="let subsection of policySections[3].subsections" class="ml-4 mt-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">{{ subsection.title }}</h3>
+                    <ul class="space-y-2 text-gray-700">
+                      <li *ngFor="let item of subsection.content" class="flex items-start gap-2">
+                        <span *ngIf="item.startsWith('•')" class="flex-shrink-0 mt-1">•</span>
+                        <span>{{ item.startsWith('•') ? item.substring(2) : item }}</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Data Security -->
+              <section id="data-security" class="scroll-mt-24 mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 pb-3 border-b border-gray-200">5. Data Security</h2>
+                <div class="space-y-4 text-gray-700 leading-relaxed">
+                  <p *ngFor="let paragraph of policySections[4].content" class="text-gray-700">
+                    {{ paragraph }}
+                  </p>
+                  
+                  <div *ngFor="let subsection of policySections[4].subsections" class="ml-4 mt-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">{{ subsection.title }}</h3>
+                    <ul class="space-y-2 text-gray-700">
+                      <li *ngFor="let item of subsection.content" class="flex items-start gap-2">
+                        <span *ngIf="item.startsWith('•')" class="flex-shrink-0 mt-1">•</span>
+                        <span>{{ item.startsWith('•') ? item.substring(2) : item }}</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Data Retention -->
+              <section id="data-retention" class="scroll-mt-24 mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 pb-3 border-b border-gray-200">6. Data Retention</h2>
+                <div class="space-y-4 text-gray-700 leading-relaxed">
+                  <p *ngFor="let paragraph of policySections[5].content" class="text-gray-700">
+                    {{ paragraph }}
+                  </p>
+                  
+                  <div *ngFor="let subsection of policySections[5].subsections" class="ml-4 mt-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">{{ subsection.title }}</h3>
+                    <ul class="space-y-2 text-gray-700">
+                      <li *ngFor="let item of subsection.content" class="flex items-start gap-2">
+                        <span *ngIf="item.startsWith('•')" class="flex-shrink-0 mt-1">•</span>
+                        <span>{{ item.startsWith('•') ? item.substring(2) : item }}</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Your Rights and Choices -->
+              <section id="your-rights" class="scroll-mt-24 mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 pb-3 border-b border-gray-200">7. Your Rights and Choices</h2>
+                <div class="space-y-4 text-gray-700 leading-relaxed">
+                  <p *ngFor="let paragraph of policySections[6].content" class="text-gray-700">
+                    {{ paragraph }}
+                  </p>
+                  
+                  <div *ngFor="let subsection of policySections[6].subsections" class="ml-4 mt-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">{{ subsection.title }}</h3>
+                    <ul class="space-y-2 text-gray-700">
+                      <li *ngFor="let item of subsection.content" class="flex items-start gap-2">
+                        <span *ngIf="item.startsWith('•')" class="flex-shrink-0 mt-1">•</span>
+                        <span>{{ item.startsWith('•') ? item.substring(2) : item }}</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Cookies and Tracking Technologies -->
+              <section id="cookies-tracking" class="scroll-mt-24 mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 pb-3 border-b border-gray-200">8. Cookies and Tracking Technologies</h2>
+                <div class="space-y-4 text-gray-700 leading-relaxed">
+                  <p *ngFor="let paragraph of policySections[7].content" class="text-gray-700">
+                    {{ paragraph }}
+                  </p>
+                  
+                  <div *ngFor="let subsection of policySections[7].subsections" class="ml-4 mt-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">{{ subsection.title }}</h3>
+                    <ul class="space-y-2 text-gray-700">
+                      <li *ngFor="let item of subsection.content" class="flex items-start gap-2">
+                        <span *ngIf="item.startsWith('•')" class="flex-shrink-0 mt-1">•</span>
+                        <span>{{ item.startsWith('•') ? item.substring(2) : item }}</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </section>
+
+              <!-- International Data Transfers -->
+              <section id="international-transfers" class="scroll-mt-24 mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 pb-3 border-b border-gray-200">9. International Data Transfers</h2>
+                <div class="space-y-4 text-gray-700 leading-relaxed">
+                  <p *ngFor="let paragraph of policySections[8].content" class="text-gray-700">
+                    {{ paragraph }}
+                  </p>
+                </div>
+              </section>
+
+              <!-- Children's Privacy -->
+              <section id="children-privacy" class="scroll-mt-24 mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 pb-3 border-b border-gray-200">10. Children's Privacy</h2>
+                <div class="space-y-4 text-gray-700 leading-relaxed">
+                  <p *ngFor="let paragraph of policySections[9].content" class="text-gray-700">
+                    {{ paragraph }}
+                  </p>
+                </div>
+              </section>
+
+              <!-- Third-Party Links -->
+              <section id="third-party-links" class="scroll-mt-24 mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 pb-3 border-b border-gray-200">11. Third-Party Links</h2>
+                <div class="space-y-4 text-gray-700 leading-relaxed">
+                  <p *ngFor="let paragraph of policySections[10].content" class="text-gray-700">
+                    {{ paragraph }}
+                  </p>
+                </div>
+              </section>
+
+              <!-- Contact Us -->
+              <section id="contact-us" class="scroll-mt-24 mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 pb-3 border-b border-gray-200">12. Contact Us</h2>
+                <div class="space-y-4 text-gray-700 leading-relaxed">
+                  <p *ngFor="let paragraph of policySections[11].content" class="text-gray-700">
+                    {{ paragraph }}
+                  </p>
+                </div>
+              </section>
+
+              <!-- Changes to This Privacy Policy -->
+              <section id="changes-policy" class="scroll-mt-24">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 pb-3 border-b border-gray-200">13. Changes to This Privacy Policy</h2>
+                <div class="space-y-4 text-gray-700 leading-relaxed">
+                  <p *ngFor="let paragraph of policySections[12].content" class="text-gray-700">
+                    {{ paragraph }}
+                  </p>
+                </div>
+              </section>
+
+            </div>
+
+            <!-- Acceptance and Actions Section -->
+            <div class="mt-12 p-6 bg-gray-50 rounded-xl border border-gray-200">
+              <div class="text-center">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Manage Your Privacy</h3>
+                <p class="text-gray-600 mb-6">
+                  You have control over your personal information. Use the tools below to manage your privacy preferences.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                  <button class="px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors duration-300">
+                    Privacy Settings
+                  </button>
+                  <button class="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-colors duration-300">
+                    Download My Data
+                  </button>
+                  <button class="px-6 py-3 border-2 border-red-300 text-red-600 rounded-xl font-semibold hover:bg-red-50 transition-colors duration-300">
+                    Delete Account
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
