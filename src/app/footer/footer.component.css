@@ -1,0 +1,19 @@
+:host {
+  display: block;
+}
+
+.bg-gray-50\/50 {
+  background-color: rgba(249, 250, 251, 0.5);
+}
+
+.text-blue-600 {
+  color: rgb(37 99 235);
+}
+
+.hover\:text-blue-600:hover {
+  color: rgb(37 99 235);
+}
+
+.border-t {
+  border-top: 1px solid rgb(229 231 235);
+}

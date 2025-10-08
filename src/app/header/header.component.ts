@@ -1,0 +1,11 @@
+import { Component } from '@angular/core';
+import { NavComponent } from './nav/nav.component';
+// import { SearchComponent } from "./search/search.component";
+
+@Component({
+  selector: 'app-header',
+  imports: [NavComponent],
+  templateUrl: './header.component.html',
+  styleUrl: './header.component.css',
+})
+export class HeaderComponent {}
