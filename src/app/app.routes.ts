@@ -17,24 +17,75 @@ import { NewProductComponent } from './products/new-product/new-product.componen
 import { FAQComponent } from './support/faq/faq.component';
 import { TermsConditionsComponent } from './informations/terms-condtions/terms-condtions.component';
 import { PrivacyPolicyComponent } from './informations/privacy-policy/privacy-policy.component';
+import { PaymentComponent } from './payment/payment.component';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent },
-  { path: 'home', component: HomeComponent },
-  { path: 'products', component: ProductsComponent },
+  {
+    path: '',
+    component: HomeComponent,
+    data: {
+      wantSearch: true,
+    },
+  },
+  {
+    path: 'home',
+    component: HomeComponent,
+    data: {
+      wantSearch: true,
+    },
+  },
+
+  {
+    path: 'products',
+    component: ProductsComponent,
+    data: {
+      wantSearch: true,
+    },
+  },
   {
     path: 'products/:id',
     component: ProductDetailsComponent,
+    data: {
+      wantSearch: true,
+    },
     // resolve: {productData:resolvePoductData},
   },
-  { path: 'favorites', component: FavoriteProductsComponent },
+  {
+    path: 'favorites',
+    component: FavoriteProductsComponent,
+  },
   { path: 'cart', component: CartComponent },
   { path: 'signup', component: SignUpComponent },
   { path: 'users', component: UsersComponent },
   { path: 'login', component: LoginComponent },
   { path: 'contact-us', component: ContactUsComponent },
-  { path: 'new-product', component: NewProductComponent },
-  { path: 'faq', component: FAQComponent },
-  { path: 'terms', component: TermsConditionsComponent },
-  { path: 'privacy', component: PrivacyPolicyComponent },
+  {
+    path: 'new-product',
+    component: NewProductComponent,
+    data: {
+      wantSearch: true,
+    },
+  },
+  {
+    path: 'payment',
+    component: PaymentComponent,
+  },
+  {
+    path: 'faq',
+    component: FAQComponent,
+  },
+  {
+    path: 'terms',
+    component: TermsConditionsComponent,
+    data: {
+      wantSearch: false,
+    },
+  },
+  {
+    path: 'privacy',
+    component: PrivacyPolicyComponent,
+    data: {
+      wantSearch: false,
+    },
+  },
 ];

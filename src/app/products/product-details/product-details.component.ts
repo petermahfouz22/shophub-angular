@@ -26,10 +26,14 @@ import { FavoriteService } from '../favorite-products/favorite.service';
   styleUrl: './product-details.component.css',
 })
 export class ProductDetailsComponent implements OnInit {
-  private activatedRouter = inject(ActivatedRoute);
-  private productsService = inject(ProductsService);
-  private cartService = inject(CartService);
-  private favoriteService = inject(FavoriteService);
+  isSignedUser: boolean = true;
+  constructor(
+    private activatedRouter: ActivatedRoute,
+    private productsService: ProductsService,
+    private cartService: CartService,
+    private favoriteService: FavoriteService
+  ) {}
+
   product?: Product;
 
   onAddToCart(product: Product) {
@@ -68,10 +72,6 @@ export class ProductDetailsComponent implements OnInit {
         // console.log(this.product);
       },
     });
-
-
-
-    
   }
   // private route = inject(ActivatedRoute);
   // productData!: Product;

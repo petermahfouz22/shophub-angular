@@ -43,7 +43,7 @@
                     class="btn-primary bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-6 py-2 rounded-lg shadow">
                     Add to Cart
                 </button>
-                <button routerLink="/signup"
+                <button [routerLink]="isSignedUser?'/payment': '/signup' "
                     class="btn-secondary bg-gray-800 hover:bg-gray-900 text-white font-medium px-6 py-2 rounded-lg shadow">
                     Buy Now
                 </button>

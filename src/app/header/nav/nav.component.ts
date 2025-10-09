@@ -7,7 +7,14 @@ import {
   computed,
 } from '@angular/core';
 // import { SearchComponent } from "../search/search.component";
-import { RouterLink, RouterLinkActive,Router, NavigationEnd } from '@angular/router';
+import {
+  RouterLink,
+  RouterLinkActive,
+  Router,
+  NavigationEnd,
+  ActivatedRoute,
+  Route,
+} from '@angular/router';
 import { SearchComponent } from '../search/search.component';
 import { CartService } from '../../products/cart/cart.service';
 import { NgIf } from '@angular/common';
@@ -22,23 +29,33 @@ import { MobileMenueService } from './mobile-menu.service';
   styleUrl: './nav.component.css',
 })
 export class NavComponent {
-  private cartService = inject(CartService);
-  private favoriteService = inject(FavoriteService);
-  private router = inject(Router);
-  // استخدم computed علشان تحسب العدد الإجمالي للمنتجات
+  wantSearch = false;
   cartCounter = computed(() => this.cartService.getTotalItems());
   favoriteCounter = computed(
     () => this.favoriteService.productFavorite().length
   );
-
   private currentRoute: string = '';
-
-  constructor(private mobileMenuService:MobileMenueService) {
+  constructor(
+    private mobileMenuService: MobileMenueService,
+    private route: ActivatedRoute,
+    private cartService: CartService,
+    private favoriteService: FavoriteService,
+    private router: Router
+  ) {
     // تتبع تغييرات الـ route
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: any) => {
         this.currentRoute = event.url;
+      });
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        let child = this.route.firstChild;
+        while (child?.firstChild) {
+          child = child.firstChild;
+        }
+        this.wantSearch = child?.snapshot.data['wantSearch'] ?? false;
       });
   }
 
@@ -46,11 +63,10 @@ export class NavComponent {
   isActive(route: string): boolean {
     return this.currentRoute === route;
   }
-    isMobileMenuOpen = false;
-
+  isMobileMenuOpen = false;
 
   ngOnInit(): void {
-    this.mobileMenuService.isOpen$.subscribe(isOpen => {
+    this.mobileMenuService.isOpen$.subscribe((isOpen) => {
       this.isMobileMenuOpen = isOpen;
     });
   }

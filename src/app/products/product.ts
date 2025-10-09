@@ -7,6 +7,16 @@ export interface Product {
   category: string;
   rating: number;
   reviews: number;
+  isNew: boolean;
+}
+export interface FilterState {
+  categories: string[];
+  maxPrice: number;
+  minRating: number;
+}
+export interface category {
+  name: string;
+  count: number;
 }
 // interface reviews {
 //   user: string;
