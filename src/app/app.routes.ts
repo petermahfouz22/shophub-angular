@@ -4,7 +4,8 @@ import { ProductsComponent } from './products/products.component';
 import { SignUpComponent } from './auth/sign-up/sign-up.component';
 // import { LoginComponent } from './auth/login/login.component';
 import { UsersComponent } from './users/users.component';
-import { Component } from '@angular/core';
+import { AuthGuard } from './auth/guards/auth.guard';
+import { roleGuard } from './auth/guards/role.guard';
 import {
   ProductDetailsComponent,
   // resolvePoductData,
@@ -13,11 +14,12 @@ import { CartComponent } from './products/cart/cart.component';
 import { LoginComponent } from './auth/login/login.component';
 import { FavoriteProductsComponent } from './products/favorite-products/favorite-products.component';
 import { ContactUsComponent } from './support/contact-us/contact-us.component';
-import { NewProductComponent } from './products/new-product/new-product.component';
+import { NewProductComponent } from './roles/Admin/manage-product/new-product/new-product.component';
 import { FAQComponent } from './support/faq/faq.component';
 import { TermsConditionsComponent } from './informations/terms-condtions/terms-condtions.component';
 import { PrivacyPolicyComponent } from './informations/privacy-policy/privacy-policy.component';
 import { PaymentComponent } from './payment/payment.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 export const routes: Routes = [
   {
@@ -65,6 +67,7 @@ export const routes: Routes = [
     data: {
       wantSearch: true,
     },
+    canActivate:[AuthGuard]
   },
   {
     path: 'payment',
@@ -88,4 +91,7 @@ export const routes: Routes = [
       wantSearch: false,
     },
   },
+  {
+    path:'**', component: NotFoundComponent
+  }
 ];

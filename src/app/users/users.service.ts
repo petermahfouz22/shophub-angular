@@ -21,10 +21,12 @@ export class UsersService {
 
   addUser(userData: User) {
     this.usersList.update((users) => [...users, userData]);
+    console.log('from usersSERVICE'+ this.usersList);
     this.saveUsers();
   }
 
   private saveUsers() {
     localStorage.setItem('users', JSON.stringify(this.users()));
   }
+
 }

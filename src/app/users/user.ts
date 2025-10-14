@@ -1,11 +1,12 @@
 export interface User {
     id: number
-    firstName:string
-    lastName:string
+    name:string
     email:string
     phone:string
-    street:string
-    number:number,
-    postalCode:string,
-    city:string,
+    // firstName:string
+    // lastName:string
+    // street:string
+    // number:number,
+    // postalCode:string,
+    // city:string,
 }

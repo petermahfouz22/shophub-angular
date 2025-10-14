@@ -1,13 +1,22 @@
 // sign-up.component.ts
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors ,ReactiveFormsModule} from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  AbstractControl,
+  ValidationErrors,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { UsersService } from '../../users/users.service';
 
 @Component({
   selector: 'app-sign-up',
-  imports:[ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './sign-up.component.html',
-  styleUrls: ['./sign-up.component.css']
+  styleUrls: ['./sign-up.component.css'],
 })
 export class SignUpComponent implements OnInit {
   signupForm!: FormGroup;
@@ -17,7 +26,8 @@ export class SignUpComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private userService: UsersService
   ) {}
 
   ngOnInit(): void {
@@ -25,38 +35,58 @@ export class SignUpComponent implements OnInit {
   }
 
   private initForm(): void {
-    this.signupForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(2)]],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [
-        Validators.required,
-        Validators.minLength(6),
-        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
-      ]],
-      confirmPassword: ['', [Validators.required]],
-      acceptTerms: [false, [Validators.requiredTrue]]
-    }, {
-      validators: this.passwordMatchValidator
-    });
+    this.signupForm = this.fb.group(
+      {
+        name: ['', [Validators.required, Validators.minLength(2)]],
+        email: ['', [Validators.required, Validators.email]],
+        password: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(6),
+            Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/),
+          ],
+        ],
+        confirmPassword: ['', [Validators.required]],
+        acceptTerms: [false, [Validators.requiredTrue]],
+      },
+      {
+        validators: this.passwordMatchValidator,
+      }
+    );
   }
 
-  private passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+  private passwordMatchValidator(
+    control: AbstractControl
+  ): ValidationErrors | null {
     const password = control.get('password');
     const confirmPassword = control.get('confirmPassword');
-    
+
     if (!password || !confirmPassword) {
       return null;
     }
 
-    return password.value === confirmPassword.value ? null : { passwordMismatch: true };
+    return password.value === confirmPassword.value
+      ? null
+      : { passwordMismatch: true };
   }
 
   // Getters for form controls
-  get name() { return this.signupForm.get('name'); }
-  get email() { return this.signupForm.get('email'); }
-  get password() { return this.signupForm.get('password'); }
-  get confirmPassword() { return this.signupForm.get('confirmPassword'); }
-  get acceptTerms() { return this.signupForm.get('acceptTerms'); }
+  get name() {
+    return this.signupForm.get('name');
+  }
+  get email() {
+    return this.signupForm.get('email');
+  }
+  get password() {
+    return this.signupForm.get('password');
+  }
+  get confirmPassword() {
+    return this.signupForm.get('confirmPassword');
+  }
+  get acceptTerms() {
+    return this.signupForm.get('acceptTerms');
+  }
 
   // Error checking methods
   hasError(controlName: string, errorName: string): boolean {
@@ -66,7 +96,7 @@ export class SignUpComponent implements OnInit {
 
   getErrorMessage(controlName: string): string {
     const control = this.signupForm.get(controlName);
-    
+
     if (!control || !control.errors) return '';
 
     if (control.hasError('required')) {
@@ -88,7 +118,10 @@ export class SignUpComponent implements OnInit {
       }
     }
 
-    if (controlName === 'confirmPassword' && this.signupForm.hasError('passwordMismatch')) {
+    if (
+      controlName === 'confirmPassword' &&
+      this.signupForm.hasError('passwordMismatch')
+    ) {
       return 'Passwords do not match';
     }
 
@@ -131,8 +164,11 @@ export class SignUpComponent implements OnInit {
       this.markAllFieldsAsTouched();
       return;
     }
-
     this.isSubmitting = true;
+    this.userService.addUser({
+      id: new Date().getTime(),
+      ...this.signupForm.value,
+    });
     console.log('Form submitted:', this.signupForm.value);
 
     // Simulate API call
@@ -147,7 +183,7 @@ export class SignUpComponent implements OnInit {
   }
 
   private markAllFieldsAsTouched(): void {
-    Object.keys(this.signupForm.controls).forEach(key => {
+    Object.keys(this.signupForm.controls).forEach((key) => {
       const control = this.signupForm.get(key);
       control?.markAsTouched();
     });

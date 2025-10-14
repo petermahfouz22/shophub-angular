@@ -30,7 +30,7 @@ export class ProductsService {
       price: 299.99,
       image:
         'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=60',
-      category: 'Wearables',
+      category: 'Electronics',
       rating: 4.8,
       reviews: 89,
       isNew: true,
@@ -56,7 +56,7 @@ export class ProductsService {
       price: 24.99,
       image:
         'https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&w=500&q=60',
-      category: 'Lifestyle',
+      category: 'Home & Garden',
       rating: 4.7,
       reviews: 167,
       isNew: true,
@@ -121,7 +121,7 @@ export class ProductsService {
       price: 14.99,
       image:
         'https://images.unsplash.com/photo-1557925923-881d7e4820ba?auto=format&fit=crop&w=500&q=60',
-      category: 'Kitchen',
+      category: 'Home & Garden',
       rating: 4.2,
       reviews: 98,
       isNew: false,

@@ -1,17 +1,17 @@
 import {
   Component,
-  computed,
-  inject,
-  input,
+  // computed,
+  // inject,
+  // input,
   OnInit,
   signal,
 } from '@angular/core';
 import {
   ActivatedRoute,
-  ActivatedRouteSnapshot,
-  ResolveFn,
-  Router,
-  RouterStateSnapshot,
+  // ActivatedRouteSnapshot,
+  // ResolveFn,
+  // Router,
+  // RouterStateSnapshot,
 } from '@angular/router';
 import { NgFor, NgIf } from '@angular/common';
 import { ProductsService } from '../products.service';
@@ -27,14 +27,22 @@ import { FavoriteService } from '../favorite-products/favorite.service';
 })
 export class ProductDetailsComponent implements OnInit {
   isSignedUser: boolean = true;
+  item_quantity = signal(0);
+  product?: Product;
   constructor(
     private activatedRouter: ActivatedRoute,
     private productsService: ProductsService,
     private cartService: CartService,
     private favoriteService: FavoriteService
   ) {}
-
-  product?: Product;
+  increaseQuantity() {
+    this.item_quantity.set(this.item_quantity() + 1);
+  }
+  decreaseQuantity() {
+    this.item_quantity.set(
+      this.item_quantity() - 1 < 1 ? 1 : this.item_quantity() - 1
+    );
+  }
 
   onAddToCart(product: Product) {
     this.cartService.addToCart(product);
@@ -55,7 +63,7 @@ export class ProductDetailsComponent implements OnInit {
       }
     }
   }
-
+  
   ngOnInit(): void {
     this.activatedRouter.paramMap.subscribe({
       next: (data) => {

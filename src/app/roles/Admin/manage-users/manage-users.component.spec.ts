@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TermsCondtionsComponent } from './terms-condtions.component';
+import { ManageUsersComponent } from './manage-users.component';
 
-describe('TermsCondtionsComponent', () => {
-  let component: TermsCondtionsComponent;
-  let fixture: ComponentFixture<TermsCondtionsComponent>;
+describe('ManageUsersComponent', () => {
+  let component: ManageUsersComponent;
+  let fixture: ComponentFixture<ManageUsersComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TermsCondtionsComponent]
+      imports: [ManageUsersComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(TermsCondtionsComponent);
+    fixture = TestBed.createComponent(ManageUsersComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

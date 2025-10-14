@@ -15,12 +15,12 @@ import {
   ActivatedRoute,
   Route,
 } from '@angular/router';
-import { SearchComponent } from '../search/search.component';
-import { CartService } from '../../products/cart/cart.service';
+import { SearchComponent } from '../../../header/search/search.component';
+import { CartService } from '../../../products/cart/cart.service';
 import { NgIf } from '@angular/common';
-import { FavoriteService } from '../../products/favorite-products/favorite.service';
+import { FavoriteService } from '../../../products/favorite-products/favorite.service';
 import { filter } from 'rxjs/operators';
-import { MobileMenueService } from './mobile-menu.service';
+import { MobileMenueService } from '../../../header/nav/mobile-menu.service';
 
 @Component({
   selector: 'app-nav',
