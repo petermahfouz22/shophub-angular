@@ -13,18 +13,11 @@
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
-        <!-- When no users -->
-        <tr *ngIf="users.length === 0">
-          <td colspan="4" class="px-6 py-12 text-center text-gray-500 italic">
-            No users found
-          </td>
-        </tr>
-
         <!-- Users list -->
-        @for(user of users ; track $index){
-        <tr class="hover:bg-gray-50 transition-colors duration-200">
+        @for(user of users(); track $index){
+        <tr class="hover:bg-gray-50 transition-colors duration-200" (click)="routing(user.id)">
           <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-            {{ user.id }}
+            {{ $index + 1}}
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
             {{ user.name }}
@@ -34,12 +27,20 @@
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm">
             <button
+              (click)="onDelete(user.id)"
               class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-xs font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-300">
               Delete
             </button>
           </td>
         </tr>
+        }@empty{
+        <tr>
+          <td colspan="4" class="px-6 py-12 text-center text-gray-500 italic">
+            No users found
+          </td>
+        </tr>
         }
+    
       </tbody>
     </table>
   </div>
@@ -47,7 +48,7 @@
   <!-- Total users count -->
   <div class="mt-4 text-right">
     <span class="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
-      Total Users: <span class="font-semibold">{{ users.length }}</span>
+      Total Users: <span class="font-semibold">{{ users().length }}</span>
     </span>
   </div>
 </div>

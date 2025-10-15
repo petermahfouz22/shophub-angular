@@ -20,7 +20,7 @@ import { TermsConditionsComponent } from './informations/terms-condtions/terms-c
 import { PrivacyPolicyComponent } from './informations/privacy-policy/privacy-policy.component';
 import { PaymentComponent } from './payment/payment.component';
 import { NotFoundComponent } from './not-found/not-found.component';
-
+import { UserDetailsComponent ,resolveUserData } from './users/user-details/user-details.component';
 export const routes: Routes = [
   {
     path: '',
@@ -59,16 +59,17 @@ export const routes: Routes = [
   { path: 'cart', component: CartComponent },
   { path: 'signup', component: SignUpComponent },
   { path: 'users', component: UsersComponent },
+  { path: 'users/:id', component:UserDetailsComponent , resolve:{userData:resolveUserData}},
   { path: 'login', component: LoginComponent },
   { path: 'contact-us', component: ContactUsComponent },
-  {
-    path: 'new-product',
-    component: NewProductComponent,
-    data: {
-      wantSearch: true,
-    },
-    canActivate:[AuthGuard]
-  },
+  // {
+  //   path: 'new-product',
+  //   component: NewProductComponent,
+  //   data: {
+  //     wantSearch: true,
+  //   },
+  //   canActivate:[AuthGuard]
+  // },
   {
     path: 'payment',
     component: PaymentComponent,
