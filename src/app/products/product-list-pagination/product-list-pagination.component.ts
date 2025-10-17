@@ -18,7 +18,6 @@ import { Product, FilterState, category } from '../product';
   selector: 'app-product-list-pagination',
   imports: [ProductComponent, CommonModule, FormsModule],
   templateUrl: './product-list-pagination.component.html',
-  styleUrl: './product-list-pagination.component.css',
 })
 export class ProductListPaginationComponent implements OnInit {
   // @ViewChild('selectElem') selectElem!: ElementRef;

@@ -21,23 +21,20 @@ export class UsersService {
       }
     }
   }
+
   getUsers(): Observable<any> {
     return this.http.get(`${Url.apiUrl}users`);
   }
+
   getUserById(id: number): Observable<User> {
     return this.http.get<User>(`${Url.apiUrl}users/${id}`);
   }
 
-  addUser(userData: User) {
-    this.usersList.update((users) => [...users, userData]);
-    console.log('from usersSERVICE' + this.usersList);
-    this.saveUsers();
-  }
   removeUser(id: number): Observable<any> {
     return this.http.delete(`${Url.apiUrl}users/${id}`);
   }
 
-  private saveUsers() {
-    localStorage.setItem('users', JSON.stringify(this.users()));
-  }
+  // private saveUsers() {
+  //   localStorage.setItem('users', JSON.stringify(this.users()));
+  // }
 }

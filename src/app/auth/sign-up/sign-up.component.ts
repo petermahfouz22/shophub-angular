@@ -10,7 +10,7 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { UsersService } from '../../users/users.service';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-sign-up',
@@ -27,7 +27,7 @@ export class SignUpComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private userService: UsersService
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -71,7 +71,6 @@ export class SignUpComponent implements OnInit {
       : { passwordMismatch: true };
   }
 
-  // Getters for form controls
   get name() {
     return this.signupForm.get('name');
   }
@@ -165,10 +164,10 @@ export class SignUpComponent implements OnInit {
       return;
     }
     this.isSubmitting = true;
-    this.userService.addUser({
-      id: new Date().getTime(),
-      ...this.signupForm.value,
-    });
+    this.authService
+      .register({...this.signupForm.value,})
+      .subscribe((res) => console.log(res));
+
     console.log('Form submitted:', this.signupForm.value);
 
     // Simulate API call

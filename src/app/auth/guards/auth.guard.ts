@@ -17,14 +17,14 @@ export class AuthGuard implements CanActivate {
     if (this.authService.isLoggedIn()) {
       
       // التحقق من الصلاحيات إذا كانت مطلوبة
-      const requiredRole = route.data['role'];
-      if (requiredRole) {
-        const userRole = this.authService.getUserRole();
-        if (userRole !== requiredRole) {
-          this.router.navigate(['/unauthorized']);
-          return false;
-        }
-      }
+      // const requiredRole = route.data['role'];
+      // if (requiredRole) {
+      //   const userRole = this.authService.getUserRole();
+      //   if (userRole !== requiredRole) {
+      //     this.router.navigate(['/unauthorized']);
+      //     return false;
+      //   }
+      // }
       
       return true;
     } else {

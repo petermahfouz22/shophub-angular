@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '../auth/auth.service';
 
 interface QuickLink {
   name: string;
@@ -24,7 +25,7 @@ export class NotFoundComponent {
     { name: 'Help Center', path: '/help' }
   ];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router,private authService:AuthService) {}
 
   goBack(): void {
     window.history.back();
@@ -32,5 +33,8 @@ export class NotFoundComponent {
 
   goHome(): void {
     this.router.navigate(['/']);
+  }
+  logout(){
+    this.authService.logout()
   }
 }

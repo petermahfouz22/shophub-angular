@@ -3,7 +3,6 @@ import { HomeComponent } from './home/home.component';
 import { ProductsComponent } from './products/products.component';
 import { SignUpComponent } from './auth/sign-up/sign-up.component';
 // import { LoginComponent } from './auth/login/login.component';
-import { UsersComponent } from './users/users.component';
 import { AuthGuard } from './auth/guards/auth.guard';
 import { roleGuard } from './auth/guards/role.guard';
 import {
@@ -14,14 +13,21 @@ import { CartComponent } from './products/cart/cart.component';
 import { LoginComponent } from './auth/login/login.component';
 import { FavoriteProductsComponent } from './products/favorite-products/favorite-products.component';
 import { ContactUsComponent } from './support/contact-us/contact-us.component';
-import { NewProductComponent } from './roles/Admin/manage-product/new-product/new-product.component';
 import { FAQComponent } from './support/faq/faq.component';
 import { TermsConditionsComponent } from './informations/terms-condtions/terms-condtions.component';
 import { PrivacyPolicyComponent } from './informations/privacy-policy/privacy-policy.component';
 import { PaymentComponent } from './payment/payment.component';
 import { NotFoundComponent } from './not-found/not-found.component';
-import { UserDetailsComponent ,resolveUserData } from './users/user-details/user-details.component';
+import { UsersComponent } from './roles/Admin/manage-users/users/users.component';
+import {
+  UserDetailsComponent,
+  resolveUserData,
+} from './roles/Admin/manage-users/users/user-details/user-details.component';
+// import { NewProductComponent } from './roles/Admin/manage-products/new-product/new-product.component';
+import { ProfileComponent } from './profile/profile.component';
+import { EditProfileComponent } from './roles/User/edit-profile/edit-profile.component';
 export const routes: Routes = [
+  //?default-Route----------------------------
   {
     path: '',
     component: HomeComponent,
@@ -29,6 +35,8 @@ export const routes: Routes = [
       wantSearch: true,
     },
   },
+  //?------------------------------------------
+  //?home(guest|user)--------------------------------------
   {
     path: 'home',
     component: HomeComponent,
@@ -36,7 +44,13 @@ export const routes: Routes = [
       wantSearch: true,
     },
   },
+  //?Auth--------------------------------------
+  { path: 'signup', component: SignUpComponent },
+  { path: 'login', component: LoginComponent },
 
+  //?------------------------------------------
+
+  //?products----------------------------------
   {
     path: 'products',
     component: ProductsComponent,
@@ -52,38 +66,43 @@ export const routes: Routes = [
     },
     // resolve: {productData:resolvePoductData},
   },
+  //?------------------------------------------
+
+  //?userSection-------------------------------
+  { path: 'users', component: UsersComponent },
+  {
+    path: 'users/:id',
+    component: UserDetailsComponent,
+    resolve: { userData: resolveUserData },
+  },
+  {
+    path:'profile',component:ProfileComponent
+  },
+  {
+    path: 'profile/edit/:id',
+    component: EditProfileComponent,
+  },
+  //?------------------------------------------
+
+  //?storage products--------------------------
   {
     path: 'favorites',
     component: FavoriteProductsComponent,
   },
   { path: 'cart', component: CartComponent },
-  { path: 'signup', component: SignUpComponent },
-  { path: 'users', component: UsersComponent },
-  { path: 'users/:id', component:UserDetailsComponent , resolve:{userData:resolveUserData}},
-  { path: 'login', component: LoginComponent },
-  { path: 'contact-us', component: ContactUsComponent },
-  // {
-  //   path: 'new-product',
-  //   component: NewProductComponent,
-  //   data: {
-  //     wantSearch: true,
-  //   },
-  //   canActivate:[AuthGuard]
-  // },
+  //?------------------------------------------
+  //?payment-----------------------------------
   {
     path: 'payment',
     component: PaymentComponent,
   },
-  {
-    path: 'faq',
-    component: FAQComponent,
-  },
+  //?Support---------------------------------
+  { path: 'faq', component: FAQComponent },
+  { path: 'contact-us', component: ContactUsComponent },
   {
     path: 'terms',
     component: TermsConditionsComponent,
-    data: {
-      wantSearch: false,
-    },
+    data: { wantSearch: false },
   },
   {
     path: 'privacy',
@@ -92,7 +111,12 @@ export const routes: Routes = [
       wantSearch: false,
     },
   },
+  //?-----------------------------------------
+
+  //?NotFound page ---------------------------
   {
-    path:'**', component: NotFoundComponent
-  }
+    path: '**',
+    component: NotFoundComponent,
+  },
+  //?-----------------------------------------
 ];

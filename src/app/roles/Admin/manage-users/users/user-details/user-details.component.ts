@@ -16,7 +16,7 @@ import { UsersService } from '../users.service';
 })
 export class UserDetailsComponent {
   private route = inject(ActivatedRoute);
-  userData?: User;
+  userData!: User;
 
   ngOnInit(): void {
     this.route.data.subscribe(({ userData }) => {

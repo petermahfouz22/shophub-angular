@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     
     // Redirect if already logged in
     if (this.authService.isLoggedIn()) {
-      this.router.navigate(['/dashboard']);
+      this.navigateAfterLogin();
     }
   }
 
@@ -149,7 +149,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   private handleSuccessfulLogin(response: any): void {
     console.log('Login successful:', response);
     
-    // Show success message (you can use a toast service here)
+    // Show success message
     this.showSuccessMessage('Login successful! Redirecting...');
 
     // Navigate based on user role or default route
@@ -164,10 +164,18 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.errorMessage = 'Invalid email or password. Please try again.';
     } else if (error.status === 403) {
       this.errorMessage = 'Your account has been suspended. Please contact support.';
+    } else if (error.status === 422) {
+      // Validation errors from Laravel
+      if (error.error.errors) {
+        const firstError = Object.values(error.error.errors)[0];
+        this.errorMessage = Array.isArray(firstError) ? firstError[0] : 'Validation error occurred';
+      } else {
+        this.errorMessage = error.error.message || 'Validation error';
+      }
     } else if (error.status === 0) {
       this.errorMessage = 'Network error. Please check your connection and try again.';
     } else {
-      this.errorMessage = 'An unexpected error occurred. Please try again later.';
+      this.errorMessage = error.error?.message || 'An unexpected error occurred. Please try again later.';
     }
 
     // Clear password field for security
@@ -176,26 +184,21 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   private navigateAfterLogin(): void {
-    // Get user role from auth service
-    const userRole = this.authService.getUserRole();
+    // يمكنك إضافة منطق التنقل بناءً على دور المستخدم هنا
+    // مثال:
+    // const user = this.authService.getCurrentUser();
+    // if (user?.role === 'admin') {
+    //   this.router.navigate(['/admin/dashboard']);
+    // } else {
+    //   this.router.navigate(['/dashboard']);
+    // }
     
-    // Navigate based on role
-    switch (userRole) {
-      case 'admin':
-        this.router.navigate(['/admin/dashboard']);
-        break;
-      case 'vendor':
-        this.router.navigate(['/vendor/dashboard']);
-        break;
-      default:
-        this.router.navigate(['/dashboard']);
-    }
+    this.router.navigate(['/profile']); // التنقل الافتراضي
   }
 
   private showSuccessMessage(message: string): void {
-    // You can implement a toast service here
+    // يمكنك استخدام خدمة toast هنا
     console.log(message);
-    // Example: this.toastService.success(message);
   }
 
   private markFormGroupTouched(): void {
@@ -210,7 +213,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.isSubmitting = true;
     console.log('Google login clicked');
     
-    // Implement Google OAuth
     this.authService.googleLogin().subscribe({
       next: (response) => {
         this.isSubmitting = false;
@@ -227,7 +229,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.isSubmitting = true;
     console.log('GitHub login clicked');
     
-    // Implement GitHub OAuth
     this.authService.githubLogin().subscribe({
       next: (response) => {
         this.isSubmitting = false;

@@ -3,32 +3,22 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
+import { User } from '../roles/Admin/manage-users/users/user';
 
 interface LoginResponse {
   success: boolean;
   token: string;
-  user: {
-    id: string;
-    email: string;
-    name: string;
-    role: string;
-  };
+  user: User;
   message?: string;
-}
-
-interface User {
-  id: string;
-  email: string;
-  name: string;
-  role: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'https://your-api-url.com/api/auth';
+  // تصحيح رابط الـ API - استخدم الرابط الصحيح من بيئتك
+  private apiUrl = 'http://localhost:8000/api/auth'; // تغيير هذا ليتناسب مع رابط Laravel
   private isAuthenticated = new BehaviorSubject<boolean>(false);
   private currentUser = new BehaviorSubject<User | null>(null);
 
@@ -37,6 +27,10 @@ export class AuthService {
     private router: Router
   ) {
     this.checkExistingAuth();
+  }
+
+  register(userData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/register`, userData);
   }
 
   // Regular email/password login
@@ -56,8 +50,6 @@ export class AuthService {
 
   // Google OAuth login
   googleLogin(): Observable<LoginResponse> {
-    // This would typically redirect to Google OAuth
-    // For demo, we'll simulate an API call
     return this.http.get<LoginResponse>(`${this.apiUrl}/google`).pipe(
       tap(response => {
         if (response.success && response.token) {
@@ -73,7 +65,6 @@ export class AuthService {
 
   // GitHub OAuth login
   githubLogin(): Observable<LoginResponse> {
-    // This would typically redirect to GitHub OAuth
     return this.http.get<LoginResponse>(`${this.apiUrl}/github`).pipe(
       tap(response => {
         if (response.success && response.token) {
@@ -97,15 +88,20 @@ export class AuthService {
     return this.currentUser.value;
   }
 
-  // Get user role
-  getUserRole(): string {
-    return this.currentUser.value?.role || 'user';
+  // Get authentication state as observable
+  getAuthState(): Observable<boolean> {
+    return this.isAuthenticated.asObservable();
   }
 
   // Logout
   logout(): void {
     this.clearAuthData();
     this.router.navigate(['/login']);
+  }
+
+  // Get token for HTTP requests
+  getToken(): string | null {
+    return localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
   }
 
   // Private methods
@@ -120,7 +116,7 @@ export class AuthService {
   }
 
   private checkExistingAuth(): void {
-    const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+    const token = this.getToken();
     const userData = localStorage.getItem('user_data') || sessionStorage.getItem('user_data');
 
     if (token && userData) {
@@ -129,6 +125,7 @@ export class AuthService {
         this.isAuthenticated.next(true);
         this.currentUser.next(user);
       } catch (error) {
+        console.error('Error parsing user data:', error);
         this.clearAuthData();
       }
     }
@@ -142,10 +139,5 @@ export class AuthService {
     
     this.isAuthenticated.next(false);
     this.currentUser.next(null);
-  }
-
-  // Get auth token (for HTTP requests)
-  getToken(): string | null {
-    return localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
   }
 }

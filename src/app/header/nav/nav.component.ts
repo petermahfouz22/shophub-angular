@@ -13,7 +13,6 @@ import {
   Router,
   NavigationEnd,
   ActivatedRoute,
-  Route,
 } from '@angular/router';
 import { SearchComponent } from '../search/search.component';
 import { CartService } from '../../products/cart/cart.service';
@@ -21,6 +20,7 @@ import { NgIf } from '@angular/common';
 import { FavoriteService } from '../../products/favorite-products/favorite.service';
 import { filter } from 'rxjs/operators';
 import { MobileMenueService } from './mobile-menu.service';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'app-nav',
@@ -28,6 +28,17 @@ import { MobileMenueService } from './mobile-menu.service';
   templateUrl: './nav.component.html',
 })
 export class NavComponent {
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  isAuthenticated = this.authService.isLoggedIn();
+  isLoggingOut = !this.isAuthenticated ? true : false;
+  userName = this.authService.getCurrentUser()?.name;
+  firstLetter = this.userName?.split('')[0];
+  onLogout() {
+    this.authService.logout();
+    // this.router.navigate(['/'])
+    // console.log(this.isAuthenticated);
+  }
   wantSearch = false;
   cartCounter = computed(() => this.cartService.getTotalItems());
   favoriteCounter = computed(
@@ -38,9 +49,10 @@ export class NavComponent {
     private mobileMenuService: MobileMenueService,
     private route: ActivatedRoute,
     private cartService: CartService,
-    private favoriteService: FavoriteService,
-    private router: Router
+    private favoriteService: FavoriteService
   ) {
+    console.log(this.userName);
+    console.log(this.firstLetter);
     // تتبع تغييرات الـ route
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
