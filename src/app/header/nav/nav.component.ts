@@ -1,92 +1,138 @@
 import {
   Component,
-  inject,
   OnInit,
-  signal,
-  effect,
+  OnDestroy,
+  inject,
   computed,
+  signal,
 } from '@angular/core';
-// import { SearchComponent } from "../search/search.component";
-import {
-  RouterLink,
-  RouterLinkActive,
-  Router,
-  NavigationEnd,
-  ActivatedRoute,
-} from '@angular/router';
-import { SearchComponent } from '../search/search.component';
-import { CartService } from '../../products/cart/cart.service';
-import { NgIf } from '@angular/common';
-import { FavoriteService } from '../../products/favorite-products/favorite.service';
-import { filter } from 'rxjs/operators';
-import { MobileMenueService } from './mobile-menu.service';
+import { CommonModule, NgIf } from '@angular/common';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+
+import { Subscription } from 'rxjs';
 import { AuthService } from '../../auth/auth.service';
+import { CartService } from '../../products/cart/cart.service';
+import { FavoriteService } from '../../products/favorite-products/favorite.service';
+import { SearchComponent } from '../search/search.component';
 
 @Component({
   selector: 'app-nav',
-  imports: [RouterLink, RouterLinkActive, SearchComponent, NgIf],
+  standalone: true,
+  imports: [CommonModule, RouterLink, RouterLinkActive, SearchComponent, NgIf],
   templateUrl: './nav.component.html',
 })
-export class NavComponent {
+export class NavComponent implements OnInit, OnDestroy {
+  // Services
   private authService = inject(AuthService);
+  private cartService = inject(CartService);
+  private favoriteService = inject(FavoriteService);
   private router = inject(Router);
-  isAuthenticated = this.authService.isLoggedIn();
-  isLoggingOut = !this.isAuthenticated ? true : false;
-  userName = this.authService.getCurrentUser()?.name;
-  firstLetter = this.userName?.split('')[0];
-  onLogout() {
-    this.authService.logout();
-    // this.router.navigate(['/'])
-    // console.log(this.isAuthenticated);
-  }
-  wantSearch = false;
-  cartCounter = computed(() => this.cartService.getTotalItems());
-  favoriteCounter = computed(
-    () => this.favoriteService.productFavorite().length
-  );
-  private currentRoute: string = '';
-  constructor(
-    private mobileMenuService: MobileMenueService,
-    private route: ActivatedRoute,
-    private cartService: CartService,
-    private favoriteService: FavoriteService
-  ) {
-    console.log(this.userName);
-    console.log(this.firstLetter);
-    // تتبع تغييرات الـ route
-    this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe((event: any) => {
-        this.currentRoute = event.url;
-      });
-    this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe(() => {
-        let child = this.route.firstChild;
-        while (child?.firstChild) {
-          child = child.firstChild;
-        }
-        this.wantSearch = child?.snapshot.data['wantSearch'] ?? false;
-      });
-  }
+  private authSubscription!: Subscription;
 
-  // التحقق إذا الرابط نشط
-  isActive(route: string): boolean {
-    return this.currentRoute === route;
-  }
-  isMobileMenuOpen = false;
+  // Search & UI State
+  wantSearch = false;
+  isMobileMenuOpen = false; // إضافة هذا المتغير المطلوب في الـ template
+
+  // Cart
+  cartCounter = computed(() => this.cartService.getTotalItems());
+
+  // Favorite
+  favoriteCounter = computed(() => this.favoriteService.productFavorite());
+
+  // Authentication
+  isAuthenticated = false;
+  isLoggingOut = false;
+  firstLetter = signal('U');
+  userName = signal('User');
+  user = signal(this.authService.getCurrentUser());
+  // إضافة هذا للإشارة إلى بيانات المستخدم
+
+  // المتغيرات الإضافية
+  f: any = null;
 
   ngOnInit(): void {
-    this.mobileMenuService.isOpen$.subscribe((isOpen) => {
-      this.isMobileMenuOpen = isOpen;
-    });
+  this.initializeAuth();
+
+  this.authService.getCurrentUserObservable().subscribe((user) => {
+    this.user.set(user);
+    if (user) {
+      this.userName.set(user.name || 'User');
+      this.firstLetter.set(user.name?.charAt(0)?.toUpperCase() || 'U');
+    }
+  });  }
+
+  ngOnDestroy(): void {
+    this.cleanupSubscriptions();
   }
 
+  private initializeAuth(): void {
+    // Subscribe to authentication state changes
+    this.authSubscription = this.authService
+      .getAuthState()
+      .subscribe((isAuthenticated) => {
+        this.isAuthenticated = isAuthenticated;
+        this.updateUserInfo();
+      });
+
+    // Initialize with current state
+    this.isAuthenticated = this.authService.isLoggedIn();
+    this.updateUserInfo();
+  }
+
+  private cleanupSubscriptions(): void {
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
+  }
+
+private updateUserInfo(): void {
+  const user = this.authService.getCurrentUser();
+  this.user.set(user);
+  this.userName.set(user?.name || 'User');
+  this.firstLetter.set(user?.name?.charAt(0)?.toUpperCase() || 'U');
+}
+
+
+  // Navigation & UI Methods
+  isActive(route: string): boolean {
+    return this.router.url === route;
+  }
+
+  toggleSearch(): void {
+    this.wantSearch = !this.wantSearch;
+  }
+
+  // Mobile Menu Methods
   toggleMobileMenu(): void {
-    this.mobileMenuService.toggle();
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
   }
 
   closeMobileMenu(): void {
-    this.mobileMenuService.close();
+    this.isMobileMenuOpen = false;
+  }
+
+  // Authentication Methods
+  async onLogout(): Promise<void> {
+    if (this.isLoggingOut) return;
+
+    this.isLoggingOut = true;
+    try {
+      await this.authService.logout();
+      this.closeMobileMenu(); // إغلاق القائمة بعد تسجيل الخروج
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      this.isLoggingOut = false;
+    }
+  }
+
+  // Methods for favorite functionality
+  toggleFavorite(): void {
+    // implementation for favorite toggle
+  }
+
+  // Method for f variable if needed
+  setF(value: any): void {
+    this.f = value;
   }
 }

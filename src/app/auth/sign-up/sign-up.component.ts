@@ -48,6 +48,13 @@ export class SignUpComponent implements OnInit {
           ],
         ],
         confirmPassword: ['', [Validators.required]],
+        gender: ['', [Validators.required]],
+        phone: [
+          '',
+          [Validators.required, Validators.pattern(/^[0-9+\-\s]{8,15}$/)],
+        ],
+        birthday: ['', [Validators.required]],
+        address: ['', [Validators.required, Validators.minLength(5)]],
         acceptTerms: [false, [Validators.requiredTrue]],
       },
       {
@@ -165,9 +172,8 @@ export class SignUpComponent implements OnInit {
     }
     this.isSubmitting = true;
     this.authService
-      .register({...this.signupForm.value,})
+      .register({ ...this.signupForm.value })
       .subscribe((res) => console.log(res));
-
     console.log('Form submitted:', this.signupForm.value);
 
     // Simulate API call

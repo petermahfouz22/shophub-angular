@@ -14,49 +14,74 @@ interface LoginResponse {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-  // تصحيح رابط الـ API - استخدم الرابط الصحيح من بيئتك
-  private apiUrl = 'http://localhost:8000/api/auth'; // تغيير هذا ليتناسب مع رابط Laravel
+  private apiUrl = 'http://localhost:8000/api/auth';
   private isAuthenticated = new BehaviorSubject<boolean>(false);
   private currentUser = new BehaviorSubject<User | null>(null);
 
-  constructor(
-    private http: HttpClient,
-    private router: Router
-  ) {
+  constructor(private http: HttpClient, private router: Router) {
     this.checkExistingAuth();
   }
 
   register(userData: any): Observable<any> {
+    console.log(userData);
+
     return this.http.post(`${this.apiUrl}/register`, userData);
   }
 
   // Regular email/password login
-  login(credentials: { email: string; password: string; rememberMe: boolean }): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
-      tap(response => {
-        if (response.success && response.token) {
-          this.setAuthData(response.token, response.user, credentials.rememberMe);
-        }
-      }),
-      catchError(error => {
-        this.clearAuthData();
-        return throwError(() => error);
+  login(credentials: {
+    email: string;
+    password: string;
+    rememberMe: boolean;
+  }): Observable<LoginResponse> {
+    return this.http
+      .post<LoginResponse>(`${this.apiUrl}/login`, credentials)
+      .pipe(
+        tap((response) => {
+          if (response.success && response.token) {
+            this.setAuthData(
+              response.token,
+              response.user,
+              credentials.rememberMe
+            );
+          }
+        }),
+        catchError((error) => {
+          this.clearAuthData();
+          return throwError(() => error);
+        })
+      );
+  }
+  
+  updateProfile(data: any): Observable<any> {
+    const token = this.getToken();
+    return this.http
+      .put(`${this.apiUrl}/update-profile`, data, {
+        headers: { Authorization: `Bearer ${token}` },
       })
-    );
+      .pipe(
+        tap((response: any) => {
+          if (response.success && response.user) {
+            // تحديث بيانات المستخدم في التخزين المحلي
+            localStorage.setItem('user_data', JSON.stringify(response.user));
+            this.currentUser.next(response.user);
+          }
+        })
+      );
   }
 
   // Google OAuth login
   googleLogin(): Observable<LoginResponse> {
     return this.http.get<LoginResponse>(`${this.apiUrl}/google`).pipe(
-      tap(response => {
+      tap((response) => {
         if (response.success && response.token) {
           this.setAuthData(response.token, response.user, true);
         }
       }),
-      catchError(error => {
+      catchError((error) => {
         this.clearAuthData();
         return throwError(() => error);
       })
@@ -66,12 +91,12 @@ export class AuthService {
   // GitHub OAuth login
   githubLogin(): Observable<LoginResponse> {
     return this.http.get<LoginResponse>(`${this.apiUrl}/github`).pipe(
-      tap(response => {
+      tap((response) => {
         if (response.success && response.token) {
           this.setAuthData(response.token, response.user, true);
         }
       }),
-      catchError(error => {
+      catchError((error) => {
         this.clearAuthData();
         return throwError(() => error);
       })
@@ -87,6 +112,9 @@ export class AuthService {
   getCurrentUser(): User | null {
     return this.currentUser.value;
   }
+  getCurrentUserObservable(): Observable<User | null> {
+    return this.currentUser.asObservable();
+  }
 
   // Get authentication state as observable
   getAuthState(): Observable<boolean> {
@@ -96,28 +124,32 @@ export class AuthService {
   // Logout
   logout(): void {
     this.clearAuthData();
+    console.log(this.isAuthenticated);
     this.router.navigate(['/login']);
   }
 
   // Get token for HTTP requests
   getToken(): string | null {
-    return localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+    return (
+      localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token')
+    );
   }
 
   // Private methods
   private setAuthData(token: string, user: User, rememberMe: boolean): void {
     const storage = rememberMe ? localStorage : sessionStorage;
-    
+
     storage.setItem('auth_token', token);
     storage.setItem('user_data', JSON.stringify(user));
-    
+
     this.isAuthenticated.next(true);
     this.currentUser.next(user);
   }
 
   private checkExistingAuth(): void {
     const token = this.getToken();
-    const userData = localStorage.getItem('user_data') || sessionStorage.getItem('user_data');
+    const userData =
+      localStorage.getItem('user_data') || sessionStorage.getItem('user_data');
 
     if (token && userData) {
       try {
@@ -136,7 +168,7 @@ export class AuthService {
     localStorage.removeItem('user_data');
     sessionStorage.removeItem('auth_token');
     sessionStorage.removeItem('user_data');
-    
+
     this.isAuthenticated.next(false);
     this.currentUser.next(null);
   }
