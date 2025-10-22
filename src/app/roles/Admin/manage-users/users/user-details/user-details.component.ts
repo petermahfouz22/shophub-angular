@@ -5,8 +5,8 @@ import {
   ResolveFn,
   RouterStateSnapshot,
 } from '@angular/router';
-import { User } from '../user';
-import { UsersService } from '../users.service';
+import { User } from '../../../../../interfaces/user';
+import { UserService } from '../../../../../services/user.service';
 
 @Component({
   selector: 'app-user-details',
@@ -26,7 +26,7 @@ export class UserDetailsComponent {
   }
 }
 export const resolveUserData: ResolveFn<User | undefined> = (route, state) => {
-  const userService = inject(UsersService);
+  const userService = inject(UserService);
   const id = Number(route.paramMap.get('id'));
   return userService.getUserById(id);
 };

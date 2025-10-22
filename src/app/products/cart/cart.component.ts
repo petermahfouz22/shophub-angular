@@ -1,8 +1,8 @@
 import { Component, inject, computed, effect } from '@angular/core';
-import { CartService } from './cart.service';
-import { CartItem } from './cart-item';
+import { CartService } from './../../services/cart.service';
+import { CartItem } from '../../interfaces/cart-item';
 import { CurrencyPipe } from '@angular/common';
-import { RouterLink } from "@angular/router"
+import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-cart',
   imports: [CurrencyPipe, RouterLink],

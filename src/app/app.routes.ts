@@ -3,8 +3,8 @@ import { HomeComponent } from './home/home.component';
 import { ProductsComponent } from './products/products.component';
 import { SignUpComponent } from './auth/sign-up/sign-up.component';
 // import { LoginComponent } from './auth/login/login.component';
-import { AuthGuard } from './auth/guards/auth.guard';
-import { roleGuard } from './auth/guards/role.guard';
+// import { AuthGuard } from './guards/auth.guard';
+// import { roleGuard } from './guards/role.guard';
 import {
   ProductDetailsComponent,
   // resolvePoductData,
@@ -26,6 +26,8 @@ import {
 // import { NewProductComponent } from './roles/Admin/manage-products/new-product/new-product.component';
 import { ProfileComponent } from './profile/profile.component';
 import { EditProfileComponent } from './roles/User/edit-profile/edit-profile.component';
+import { SettingComponent } from './setting/setting.component';
+import { GoogleCallbackComponent } from './auth/google-callback/google-callback.component';
 export const routes: Routes = [
   //?default-Route----------------------------
   {
@@ -47,6 +49,7 @@ export const routes: Routes = [
   //?Auth--------------------------------------
   { path: 'signup', component: SignUpComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'auth/google/callback', component: GoogleCallbackComponent },
 
   //?------------------------------------------
 
@@ -76,14 +79,17 @@ export const routes: Routes = [
     resolve: { userData: resolveUserData },
   },
   {
-    path:'profile',component:ProfileComponent
+    path: 'profile',
+    component: ProfileComponent,
   },
   {
     path: 'profile/edit/:id',
     component: EditProfileComponent,
   },
-  //?------------------------------------------
-
+  {
+    path: 'setting',
+    component: SettingComponent,
+  },
   //?storage products--------------------------
   {
     path: 'favorites',

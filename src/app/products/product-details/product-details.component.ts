@@ -14,11 +14,11 @@ import {
   // RouterStateSnapshot,
 } from '@angular/router';
 import { NgFor, NgIf } from '@angular/common';
-import { ProductsService } from '../products.service';
-import { Product } from '../product';
-import { CartService } from '../cart/cart.service';
+import { ProductService } from '../../services/product.service';
+import { Product } from '../../interfaces/product';
+import { CartService } from './../../services/cart.service';
 import { RouterLink } from '@angular/router';
-import { FavoriteService } from '../favorite-products/favorite.service';
+import { FavoriteService } from '../../services/favorite.service';
 @Component({
   selector: 'app-product-details',
   imports: [NgFor, NgIf, RouterLink],
@@ -31,7 +31,7 @@ export class ProductDetailsComponent implements OnInit {
   product?: Product;
   constructor(
     private activatedRouter: ActivatedRoute,
-    private productsService: ProductsService,
+    private ProductService: ProductService,
     private cartService: CartService,
     private favoriteService: FavoriteService
   ) {}
@@ -63,17 +63,17 @@ export class ProductDetailsComponent implements OnInit {
       }
     }
   }
-  
+
   ngOnInit(): void {
     this.activatedRouter.paramMap.subscribe({
       next: (data) => {
-        this.product = this.productsService
-          .products()
-          .find((e) => e.id === Number(data.get('id')));
+        this.product = this.ProductService.products().find(
+          (e) => e.id === Number(data.get('id'))
+        );
         // console.log(this.product);
 
         // console.log(
-        //   this.productsService
+        //   this.ProductService
         //     .products()
         //     .find((e) => e.id === Number(data.get('id')))
         // );
@@ -92,8 +92,8 @@ export class ProductDetailsComponent implements OnInit {
 //   activatedRoute: ActivatedRouteSnapshot,
 //   routerState: RouterStateSnapshot
 // ) => {
-//   const productsService = inject(ProductsService);
-//   const productData = productsService
+//   const ProductService = inject(ProductService);
+//   const productData = ProductService
 //     .products()
 //     .find((p) => p.id === Number(activatedRoute.paramMap.get('id')));
 //   return productData;

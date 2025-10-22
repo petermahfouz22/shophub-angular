@@ -6,7 +6,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { CartService } from '../products/cart/cart.service';
+import { CartService } from '../services/cart.service';
 
 interface OrderItem {
   id: number;
@@ -24,7 +24,7 @@ interface OrderItem {
   styleUrls: ['./payment.component.css'],
 })
 export class PaymentComponent implements OnInit {
-  private cartService = inject(CartService)
+  private cartService = inject(CartService);
   constructor(private fb: FormBuilder) {}
   paymentForm!: FormGroup;
   paymentMethod = signal<'card' | 'paypal'>('card');

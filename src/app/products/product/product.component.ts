@@ -1,9 +1,9 @@
 import { Component, inject, input } from '@angular/core';
-import { Product } from '../product';
-import { CartService } from '../cart/cart.service';
-import { FavoriteService } from '../favorite-products/favorite.service';
+import { Product } from '../../interfaces/product';
+import { CartService } from './../../services/cart.service';
+import { FavoriteService } from '../../services/favorite.service';
 import { NgIf } from '@angular/common';
-import { ProductsService } from '../products.service';
+import { ProductService } from '../../services/product.service';
 // import { ImageAspectRatioDirective } from '../product.directive';
 @Component({
   selector: 'app-product',
@@ -15,7 +15,7 @@ export class ProductComponent {
   product = input.required<Product>();
   private cartService = inject(CartService);
   private favoriteService = inject(FavoriteService);
-  private productService = inject(ProductsService);
+  private productService = inject(ProductService);
   onAddToCart(product: Product) {
     this.cartService.addToCart(product);
   }

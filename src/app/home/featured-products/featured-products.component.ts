@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { ProductComponent } from '../../products/product/product.component';
-import { ProductsService } from '../../products/products.service';
+import { ProductService } from '../../services/product.service';
 
 @Component({
   selector: 'app-featured-products',
@@ -9,7 +9,7 @@ import { ProductsService } from '../../products/products.service';
   styleUrl: './featured-products.component.css',
 })
 export class FeaturedProductsComponent {
-  private productService = inject(ProductsService);
+  private productService = inject(ProductService);
   products = this.productService.products();
   limitedProducts = this.products.slice(0, 4);
 }

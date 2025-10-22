@@ -6,7 +6,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../auth/auth.service';
+import { AuthService } from '../services/auth.service';
 @Component({
   selector: 'app-profile',
   imports: [ReactiveFormsModule, CommonModule],
@@ -57,29 +57,28 @@ export class ProfileComponent implements OnInit {
     console.log('Change avatar clicked');
   }
 
-onSubmit(): void {
-  console.log('hello');
-  if (this.profileForm.valid) {
-    const formData = {
-      name: `${this.profileForm.value.firstName} ${this.profileForm.value.lastName}`,
-      email: this.profileForm.value.email,
-      phone: this.profileForm.value.phone,
-      gender: this.profileForm.value.gender,
-      birthDay: this.profileForm.value.birthDay,
-      address: this.profileForm.value.address,
-    };
-    console.log(formData);
-    this.authService.updateProfile(formData).subscribe({
-      next: (res) => {
-        alert('✅ Profile updated successfully!');
-        console.log('Updated user:', res.user);
-      },
-      error: (err) => {
-        console.error('Profile update error:', err);
-        alert('❌ Failed to update profile.');
-      },
-    });
+  onSubmit(): void {
+    console.log('hello');
+    if (this.profileForm.valid) {
+      const formData = {
+        name: `${this.profileForm.value.firstName} ${this.profileForm.value.lastName}`,
+        email: this.profileForm.value.email,
+        phone: this.profileForm.value.phone,
+        gender: this.profileForm.value.gender,
+        birthDay: this.profileForm.value.birthDay,
+        address: this.profileForm.value.address,
+      };
+      console.log(formData);
+      this.authService.updateProfile(formData).subscribe({
+        next: (res) => {
+          alert('✅ Profile updated successfully!');
+          console.log('Updated user:', res.user);
+        },
+        error: (err) => {
+          console.error('Profile update error:', err);
+          alert('❌ Failed to update profile.');
+        },
+      });
+    }
   }
-}
-
 }

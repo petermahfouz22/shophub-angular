@@ -1,11 +1,11 @@
 import { Injectable, signal, inject } from '@angular/core';
-import { category, Product } from './product';
+import { category, Product } from '../interfaces/product';
 import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ProductsService {
+export class ProductService {
   private router = inject(Router);
 
   private productsList = signal<Product[]>([
@@ -173,9 +173,9 @@ export class ProductsService {
     { name: 'Sports', count: 19 },
     { name: 'Beauty', count: 24 },
   ]);
-  
+
   products = this.productsList.asReadonly();
-  categoties = this.categoriesList.asReadonly()
+  categoties = this.categoriesList.asReadonly();
 
   routing(productId: number) {
     this.router.navigate(['products/', productId]);

@@ -1,7 +1,7 @@
 import { Component, inject, input, OnInit, signal } from '@angular/core';
-import { ProductsService } from '../../products/products.service';
+import { ProductService } from '../../services/product.service';
 import { FormsModule } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-search',
@@ -10,10 +10,10 @@ import { Router, ActivatedRoute } from '@angular/router';
   styleUrl: './search.component.css',
 })
 export class SearchComponent {
-  private productsService = inject(ProductsService);
+  private ProductService = inject(ProductService);
   constructor(private router: Router) {}
 
-  products = this.productsService.products();
+  products = this.ProductService.products();
   filteredProducts = [...this.products];
   searchInput = '';
   search() {

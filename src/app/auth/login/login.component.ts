@@ -1,16 +1,27 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../../services/auth.service';
 import { Subscription } from 'rxjs';
+import { SocialLoginComponent } from '../social-login/social-login.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    SocialLoginComponent,
+  ],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit, OnDestroy {
   loginForm!: FormGroup;
@@ -27,7 +38,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.initializeForm();
-    
+
     // Redirect if already logged in
     if (this.authService.isLoggedIn()) {
       this.navigateAfterLogin();
@@ -43,12 +54,15 @@ export class LoginComponent implements OnInit, OnDestroy {
   private initializeForm(): void {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [
-        Validators.required,
-        Validators.minLength(6),
-        Validators.maxLength(50)
-      ]],
-      rememberMe: [false]
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(6),
+          Validators.maxLength(50),
+        ],
+      ],
+      rememberMe: [false],
     });
   }
 
@@ -68,7 +82,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   // Check if field has error
   hasError(controlName: string, errorName: string): boolean {
     const control = this.loginForm.get(controlName);
-    return control ? control.hasError(errorName) && (control.dirty || control.touched) : false;
+    return control
+      ? control.hasError(errorName) && (control.dirty || control.touched)
+      : false;
   }
 
   // Get error message for field
@@ -87,12 +103,16 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     if (control.hasError('minlength')) {
       const minLength = control.errors['minlength'].requiredLength;
-      return `${this.getFieldLabel(controlName)} must be at least ${minLength} characters`;
+      return `${this.getFieldLabel(
+        controlName
+      )} must be at least ${minLength} characters`;
     }
 
     if (control.hasError('maxlength')) {
       const maxLength = control.errors['maxlength'].requiredLength;
-      return `${this.getFieldLabel(controlName)} cannot exceed ${maxLength} characters`;
+      return `${this.getFieldLabel(
+        controlName
+      )} cannot exceed ${maxLength} characters`;
     }
 
     return 'Invalid value';
@@ -123,23 +143,22 @@ export class LoginComponent implements OnInit, OnDestroy {
       const loginData = {
         email: this.loginForm.value.email,
         password: this.loginForm.value.password,
-        rememberMe: this.loginForm.value.rememberMe
+        rememberMe: this.loginForm.value.rememberMe,
       };
 
       // Call authentication service
       this.authSubscription = this.authService.login(loginData).subscribe({
         next: (response) => {
           this.isSubmitting = false;
-          
+
           // Handle successful login
           this.handleSuccessfulLogin(response);
         },
         error: (error) => {
           this.isSubmitting = false;
           this.handleLoginError(error);
-        }
+        },
       });
-
     } else {
       console.log('Form is invalid');
       this.errorMessage = 'Please fix the validation errors above.';
@@ -148,7 +167,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   private handleSuccessfulLogin(response: any): void {
     console.log('Login successful:', response);
-    
+
     // Show success message
     this.showSuccessMessage('Login successful! Redirecting...');
 
@@ -158,24 +177,30 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   private handleLoginError(error: any): void {
     console.error('Login error:', error);
-    
+
     // Set appropriate error message based on error type
     if (error.status === 401) {
       this.errorMessage = 'Invalid email or password. Please try again.';
     } else if (error.status === 403) {
-      this.errorMessage = 'Your account has been suspended. Please contact support.';
+      this.errorMessage =
+        'Your account has been suspended. Please contact support.';
     } else if (error.status === 422) {
       // Validation errors from Laravel
       if (error.error.errors) {
         const firstError = Object.values(error.error.errors)[0];
-        this.errorMessage = Array.isArray(firstError) ? firstError[0] : 'Validation error occurred';
+        this.errorMessage = Array.isArray(firstError)
+          ? firstError[0]
+          : 'Validation error occurred';
       } else {
         this.errorMessage = error.error.message || 'Validation error';
       }
     } else if (error.status === 0) {
-      this.errorMessage = 'Network error. Please check your connection and try again.';
+      this.errorMessage =
+        'Network error. Please check your connection and try again.';
     } else {
-      this.errorMessage = error.error?.message || 'An unexpected error occurred. Please try again later.';
+      this.errorMessage =
+        error.error?.message ||
+        'An unexpected error occurred. Please try again later.';
     }
 
     // Clear password field for security
@@ -192,7 +217,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     // } else {
     //   this.router.navigate(['/dashboard']);
     // }
-    
+
     this.router.navigate(['/profile']); // التنقل الافتراضي
   }
 
@@ -202,42 +227,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   private markFormGroupTouched(): void {
-    Object.keys(this.loginForm.controls).forEach(key => {
+    Object.keys(this.loginForm.controls).forEach((key) => {
       const control = this.loginForm.get(key);
       control?.markAsTouched();
-    });
-  }
-
-  // Social login methods
-  onGoogleLogin(): void {
-    this.isSubmitting = true;
-    console.log('Google login clicked');
-    
-    this.authService.googleLogin().subscribe({
-      next: (response) => {
-        this.isSubmitting = false;
-        this.handleSuccessfulLogin(response);
-      },
-      error: (error) => {
-        this.isSubmitting = false;
-        this.handleLoginError(error);
-      }
-    });
-  }
-
-  onGitHubLogin(): void {
-    this.isSubmitting = true;
-    console.log('GitHub login clicked');
-    
-    this.authService.githubLogin().subscribe({
-      next: (response) => {
-        this.isSubmitting = false;
-        this.handleSuccessfulLogin(response);
-      },
-      error: (error) => {
-        this.isSubmitting = false;
-        this.handleLoginError(error);
-      }
     });
   }
 
@@ -246,7 +238,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.loginForm.reset({
       email: '',
       password: '',
-      rememberMe: false
+      rememberMe: false,
     });
     this.errorMessage = '';
   }

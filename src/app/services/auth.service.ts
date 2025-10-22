@@ -1,10 +1,10 @@
-// auth.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { User } from '../roles/Admin/manage-users/users/user';
+import { User } from '../interfaces/user';
+import { Url } from '../urls.environment';
 
 interface LoginResponse {
   success: boolean;
@@ -13,11 +13,17 @@ interface LoginResponse {
   message?: string;
 }
 
+interface GoogleAuthResponse {
+  success: boolean;
+  url: string;
+  message?: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8000/api/auth';
+  private apiUrl = `${Url.apiUrl}auth`;
   private isAuthenticated = new BehaviorSubject<boolean>(false);
   private currentUser = new BehaviorSubject<User | null>(null);
 
@@ -27,7 +33,6 @@ export class AuthService {
 
   register(userData: any): Observable<any> {
     console.log(userData);
-
     return this.http.post(`${this.apiUrl}/register`, userData);
   }
 
@@ -55,88 +60,46 @@ export class AuthService {
         })
       );
   }
-  
+
   updateProfile(data: any): Observable<any> {
-    const token = this.getToken();
-    return this.http
-      .put(`${this.apiUrl}/update-profile`, data, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .pipe(
-        tap((response: any) => {
-          if (response.success && response.user) {
-            // تحديث بيانات المستخدم في التخزين المحلي
-            localStorage.setItem('user_data', JSON.stringify(response.user));
-            this.currentUser.next(response.user);
-          }
-        })
-      );
-  }
-
-  // Google OAuth login
-  googleLogin(): Observable<LoginResponse> {
-    return this.http.get<LoginResponse>(`${this.apiUrl}/google`).pipe(
-      tap((response) => {
-        if (response.success && response.token) {
-          this.setAuthData(response.token, response.user, true);
+    return this.http.put(`${this.apiUrl}/update-profile`, data).pipe(
+      tap((response: any) => {
+        if (response.success && response.user) {
+          localStorage.setItem('user_data', JSON.stringify(response.user));
+          sessionStorage.setItem('user_data', JSON.stringify(response.user));
+          this.currentUser.next(response.user);
         }
-      }),
-      catchError((error) => {
-        this.clearAuthData();
-        return throwError(() => error);
       })
     );
-  }
-
-  // GitHub OAuth login
-  githubLogin(): Observable<LoginResponse> {
-    return this.http.get<LoginResponse>(`${this.apiUrl}/github`).pipe(
-      tap((response) => {
-        if (response.success && response.token) {
-          this.setAuthData(response.token, response.user, true);
-        }
-      }),
-      catchError((error) => {
-        this.clearAuthData();
-        return throwError(() => error);
-      })
-    );
-  }
-
-  // Check if user is logged in
-  isLoggedIn(): boolean {
-    return this.isAuthenticated.value;
-  }
-
-  // Get current user
-  getCurrentUser(): User | null {
-    return this.currentUser.value;
-  }
-  getCurrentUserObservable(): Observable<User | null> {
-    return this.currentUser.asObservable();
   }
 
   // Get authentication state as observable
   getAuthState(): Observable<boolean> {
     return this.isAuthenticated.asObservable();
   }
-
-  // Logout
-  logout(): void {
-    this.clearAuthData();
-    console.log(this.isAuthenticated);
-    this.router.navigate(['/login']);
+  googleLogin(): Observable<GoogleAuthResponse> {
+    return this.http.get<GoogleAuthResponse>(`${this.apiUrl}/google`);
   }
 
-  // Get token for HTTP requests
-  getToken(): string | null {
-    return (
-      localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token')
-    );
+  // معالجة الـ callback من Google
+  handleGoogleCallback(code: string): Observable<LoginResponse> {
+    return this.http
+      .get<LoginResponse>(`${this.apiUrl}/google/callback?code=${code}`)
+      .pipe(
+        tap((response) => {
+          if (response.success && response.token) {
+            this.setAuthData(response.token, response.user, true);
+          }
+        }),
+        catchError((error) => {
+          this.clearAuthData();
+          return throwError(() => error);
+        })
+      );
   }
 
-  // Private methods
-  private setAuthData(token: string, user: User, rememberMe: boolean): void {
+  // حفظ بيانات المصادقة
+  setAuthData(token: string, user: User, rememberMe: boolean): void {
     const storage = rememberMe ? localStorage : sessionStorage;
 
     storage.setItem('auth_token', token);
@@ -144,6 +107,46 @@ export class AuthService {
 
     this.isAuthenticated.next(true);
     this.currentUser.next(user);
+
+    console.log('✅ Authentication data saved:', user.name);
+  }
+
+  // التحقق من المصادقة
+  isLoggedIn(): boolean {
+    return this.isAuthenticated.value;
+  }
+
+  getCurrentUser(): User | null {
+    return this.currentUser.value;
+  }
+
+  getCurrentUserObservable(): Observable<User | null> {
+    return this.currentUser.asObservable();
+  }
+
+  getToken(): string | null {
+    return (
+      localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token')
+    );
+  }
+
+  // تسجيل الخروج
+  logout(): void {
+    const token = this.getToken();
+    if (token) {
+      this.http
+        .post(
+          `${this.apiUrl}/logout`,
+          {},
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        )
+        .subscribe();
+    }
+
+    this.clearAuthData();
+    this.router.navigate(['/login']);
   }
 
   private checkExistingAuth(): void {
@@ -156,6 +159,7 @@ export class AuthService {
         const user = JSON.parse(userData);
         this.isAuthenticated.next(true);
         this.currentUser.next(user);
+        console.log('✅ Existing auth found:', user.name);
       } catch (error) {
         console.error('Error parsing user data:', error);
         this.clearAuthData();
@@ -171,5 +175,7 @@ export class AuthService {
 
     this.isAuthenticated.next(false);
     this.currentUser.next(null);
+
+    console.log('🚪 Auth data cleared');
   }
 }

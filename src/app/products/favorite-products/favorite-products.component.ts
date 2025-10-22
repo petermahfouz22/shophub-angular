@@ -1,8 +1,8 @@
 import { Component, inject, signal, computed } from '@angular/core';
-import { FavoriteService } from './favorite.service';
-import { Product } from '../product';
+import { FavoriteService } from '../../services/favorite.service';
+import { Product } from '../../interfaces/product';
 import { FormsModule } from '@angular/forms';
-import { CartService } from '../cart/cart.service';
+import { CartService } from './../../services/cart.service';
 
 @Component({
   selector: 'app-favorite-products',

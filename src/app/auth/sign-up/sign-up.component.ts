@@ -10,11 +10,12 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../../services/auth.service';
+import { SocialLoginComponent } from '../social-login/social-login.component';
 
 @Component({
   selector: 'app-sign-up',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, SocialLoginComponent],
   templateUrl: './sign-up.component.html',
   styleUrls: ['./sign-up.component.css'],
 })
@@ -141,27 +142,6 @@ export class SignUpComponent implements OnInit {
 
   toggleConfirmPasswordVisibility(): void {
     this.showConfirmPassword = !this.showConfirmPassword;
-  }
-
-  // Social signup methods
-  onGoogleSignup(): void {
-    this.isSubmitting = true;
-    console.log('Google signup initiated');
-    // Implement Google signup logic here
-    setTimeout(() => {
-      this.isSubmitting = false;
-      // Redirect or show success message
-    }, 2000);
-  }
-
-  onGitHubSignup(): void {
-    this.isSubmitting = true;
-    console.log('GitHub signup initiated');
-    // Implement GitHub signup logic here
-    setTimeout(() => {
-      this.isSubmitting = false;
-      // Redirect or show success message
-    }, 2000);
   }
 
   // Form submission

@@ -10,9 +10,9 @@ import { CommonModule, NgIf } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 import { Subscription } from 'rxjs';
-import { AuthService } from '../../auth/auth.service';
-import { CartService } from '../../products/cart/cart.service';
-import { FavoriteService } from '../../products/favorite-products/favorite.service';
+import { AuthService } from '../../services/auth.service';
+import { CartService } from './../../services/cart.service';
+import { FavoriteService } from '../../services/favorite.service';
 import { SearchComponent } from '../search/search.component';
 
 @Component({
@@ -51,15 +51,16 @@ export class NavComponent implements OnInit, OnDestroy {
   f: any = null;
 
   ngOnInit(): void {
-  this.initializeAuth();
+    this.initializeAuth();
 
-  this.authService.getCurrentUserObservable().subscribe((user) => {
-    this.user.set(user);
-    if (user) {
-      this.userName.set(user.name || 'User');
-      this.firstLetter.set(user.name?.charAt(0)?.toUpperCase() || 'U');
-    }
-  });  }
+    this.authService.getCurrentUserObservable().subscribe((user) => {
+      this.user.set(user);
+      if (user) {
+        this.userName.set(user.name || 'User');
+        this.firstLetter.set(user.name?.charAt(0)?.toUpperCase() || 'U');
+      }
+    });
+  }
 
   ngOnDestroy(): void {
     this.cleanupSubscriptions();
@@ -85,13 +86,12 @@ export class NavComponent implements OnInit, OnDestroy {
     }
   }
 
-private updateUserInfo(): void {
-  const user = this.authService.getCurrentUser();
-  this.user.set(user);
-  this.userName.set(user?.name || 'User');
-  this.firstLetter.set(user?.name?.charAt(0)?.toUpperCase() || 'U');
-}
-
+  private updateUserInfo(): void {
+    const user = this.authService.getCurrentUser();
+    this.user.set(user);
+    this.userName.set(user?.name || 'User');
+    this.firstLetter.set(user?.name?.charAt(0)?.toUpperCase() || 'U');
+  }
 
   // Navigation & UI Methods
   isActive(route: string): boolean {

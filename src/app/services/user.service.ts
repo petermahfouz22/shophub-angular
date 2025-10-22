@@ -1,12 +1,13 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { User } from './user';
-import { Url } from './urls.environment';
+import { User } from '../interfaces/user';
+import { Url } from '../urls.environment';
 @Injectable({
   providedIn: 'root',
 })
-export class UsersService {
+export class UserService {
+  private apiUrl = Url;
   private usersList = signal<User[]>([]);
   users = this.usersList.asReadonly();
 
@@ -23,15 +24,15 @@ export class UsersService {
   }
 
   getUsers(): Observable<any> {
-    return this.http.get(`${Url.apiUrl}users`);
+    return this.http.get(`${this.apiUrl}users`);
   }
 
   getUserById(id: number): Observable<User> {
-    return this.http.get<User>(`${Url.apiUrl}users/${id}`);
+    return this.http.get<User>(`${this.apiUrl}users/${id}`);
   }
 
   removeUser(id: number): Observable<any> {
-    return this.http.delete(`${Url.apiUrl}users/${id}`);
+    return this.http.delete(`${this.apiUrl}users/${id}`);
   }
 
   // private saveUsers() {

@@ -1,8 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
-import { UsersService } from './users.service';
+import { UserService } from '../../../../services/user.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { User } from './user';
+import { User } from '../../../../interfaces/user';
 
 @Component({
   selector: 'app-users',
@@ -12,13 +12,13 @@ import { User } from './user';
 })
 export class UsersComponent {
   route = inject(Router);
-  private usersService = inject(UsersService);
+  private userService = inject(UserService);
   users = signal<User[]>([]);
-  // users = this.usersService.users();
+  // users = this.UserService.users();
   properties = signal<string[]>([]);
 
   ngOnInit(): void {
-    this.usersService.getUsers().subscribe((data) => {
+    this.userService.getUsers().subscribe((data) => {
       this.users.set(data);
       if (this.users().length > 0) {
         this.properties.set(Object.keys(this.users()[0]).slice(0, -3));
@@ -28,7 +28,7 @@ export class UsersComponent {
     });
   }
   onDelete(id: number) {
-    this.usersService.removeUser(id).subscribe({
+    this.userService.removeUser(id).subscribe({
       next: (res) => {
         console.log(res);
         this.users.set(this.users().filter((user) => user.id !== id));

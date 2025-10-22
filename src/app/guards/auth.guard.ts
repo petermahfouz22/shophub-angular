@@ -1,21 +1,16 @@
 // auth.guard.ts
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot } from '@angular/router';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../services/auth.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
-  
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   canActivate(route: ActivatedRouteSnapshot): boolean {
     if (this.authService.isLoggedIn()) {
-      
       // التحقق من الصلاحيات إذا كانت مطلوبة
       // const requiredRole = route.data['role'];
       // if (requiredRole) {
@@ -25,11 +20,11 @@ export class AuthGuard implements CanActivate {
       //     return false;
       //   }
       // }
-      
+
       return true;
     } else {
-      this.router.navigate(['/login'], { 
-        queryParams: { returnUrl: route.url } 
+      this.router.navigate(['/login'], {
+        queryParams: { returnUrl: route.url },
       });
       return false;
     }

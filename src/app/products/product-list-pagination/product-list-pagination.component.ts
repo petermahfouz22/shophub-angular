@@ -11,8 +11,8 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProductComponent } from '../product/product.component';
-import { ProductsService } from '../products.service';
-import { Product, FilterState, category } from '../product';
+import { ProductService } from '../../services/product.service';
+import { Product, FilterState, category } from '../../interfaces/product';
 
 @Component({
   selector: 'app-product-list-pagination',
@@ -29,7 +29,7 @@ export class ProductListPaginationComponent implements OnInit {
   //     // console.log(e.nativeElement);
   //   });
   // }
-  private productService = inject(ProductsService);
+  private productService = inject(ProductService);
   products = this.productService.products();
 
   // Filter state
