@@ -74,7 +74,8 @@
         <div>
           <div class="flex items-center justify-between mb-2">
             <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-            <a href="#" class="text-sm text-blue-600 hover:text-blue-500 transition-colors">Forgot password?</a>
+            <a routerLink="/forgot-password" class="text-sm text-blue-600 hover:text-blue-500 transition-colors">Forgot
+              password?</a>
           </div>
           <div class="relative">
             <input id="password" formControlName="password" [type]="showPassword ? 'text' : 'password'"

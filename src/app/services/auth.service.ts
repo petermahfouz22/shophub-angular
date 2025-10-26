@@ -1,3 +1,4 @@
+// services/auth.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -5,25 +6,17 @@ import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { User } from '../interfaces/user';
 import { Url } from '../urls.environment';
-
-interface LoginResponse {
-  success: boolean;
-  token: string;
-  user: User;
-  message?: string;
-}
-
-interface GoogleAuthResponse {
-  success: boolean;
-  url: string;
-  message?: string;
-}
-
+import {
+  LoginResponse,
+  GoogleAuthResponse,
+  ForgotPasswordResponse,
+  ResetPasswordResponse,
+} from '../interfaces/auth';
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = `${Url.apiUrl}auth`;
+  private apiUrl = `${Url.apiUrl}/auth`;
   private isAuthenticated = new BehaviorSubject<boolean>(false);
   private currentUser = new BehaviorSubject<User | null>(null);
 
@@ -31,12 +24,11 @@ export class AuthService {
     this.checkExistingAuth();
   }
 
+  // ============ REGISTRATION & LOGIN ============
   register(userData: any): Observable<any> {
-    console.log(userData);
     return this.http.post(`${this.apiUrl}/register`, userData);
   }
 
-  // Regular email/password login
   login(credentials: {
     email: string;
     password: string;
@@ -61,27 +53,11 @@ export class AuthService {
       );
   }
 
-  updateProfile(data: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/update-profile`, data).pipe(
-      tap((response: any) => {
-        if (response.success && response.user) {
-          localStorage.setItem('user_data', JSON.stringify(response.user));
-          sessionStorage.setItem('user_data', JSON.stringify(response.user));
-          this.currentUser.next(response.user);
-        }
-      })
-    );
-  }
-
-  // Get authentication state as observable
-  getAuthState(): Observable<boolean> {
-    return this.isAuthenticated.asObservable();
-  }
+  // ============ GOOGLE AUTH ============
   googleLogin(): Observable<GoogleAuthResponse> {
     return this.http.get<GoogleAuthResponse>(`${this.apiUrl}/google`);
   }
 
-  // معالجة الـ callback من Google
   handleGoogleCallback(code: string): Observable<LoginResponse> {
     return this.http
       .get<LoginResponse>(`${this.apiUrl}/google/callback?code=${code}`)
@@ -98,7 +74,40 @@ export class AuthService {
       );
   }
 
-  // حفظ بيانات المصادقة
+  // ============ PASSWORD RESET ============
+  forgotPassword(email: string): Observable<ForgotPasswordResponse> {
+    return this.http.post<ForgotPasswordResponse>(
+      `${this.apiUrl}/forgot-password`,
+      { email }
+    );
+  }
+
+  resetPassword(data: {
+    token: string;
+    email: string;
+    password: string;
+    password_confirmation: string;
+  }): Observable<ResetPasswordResponse> {
+    return this.http.post<ResetPasswordResponse>(
+      `${this.apiUrl}/reset-password`,
+      data
+    );
+  }
+
+  // ============ PROFILE MANAGEMENT ============
+  updateProfile(data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/update-profile`, data).pipe(
+      tap((response: any) => {
+        if (response.success && response.user) {
+          localStorage.setItem('user_data', JSON.stringify(response.user));
+          sessionStorage.setItem('user_data', JSON.stringify(response.user));
+          this.currentUser.next(response.user);
+        }
+      })
+    );
+  }
+
+  // ============ AUTH STATE MANAGEMENT ============
   setAuthData(token: string, user: User, rememberMe: boolean): void {
     const storage = rememberMe ? localStorage : sessionStorage;
 
@@ -108,10 +117,13 @@ export class AuthService {
     this.isAuthenticated.next(true);
     this.currentUser.next(user);
 
-    console.log('✅ Authentication data saved:', user.name);
+    console.log('✅ Authentication data set successfully', {
+      user: user.name,
+      hasToken: !!token,
+      storage: rememberMe ? 'localStorage' : 'sessionStorage',
+    });
   }
 
-  // التحقق من المصادقة
   isLoggedIn(): boolean {
     return this.isAuthenticated.value;
   }
@@ -124,13 +136,17 @@ export class AuthService {
     return this.currentUser.asObservable();
   }
 
+  getAuthState(): Observable<boolean> {
+    return this.isAuthenticated.asObservable();
+  }
+
   getToken(): string | null {
     return (
       localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token')
     );
   }
 
-  // تسجيل الخروج
+  // ============ LOGOUT ============
   logout(): void {
     const token = this.getToken();
     if (token) {
@@ -142,13 +158,17 @@ export class AuthService {
             headers: { Authorization: `Bearer ${token}` },
           }
         )
-        .subscribe();
+        .subscribe({
+          next: () => console.log('✅ Logout request sent to server'),
+          error: (error) => console.error('❌ Logout request failed:', error),
+        });
     }
 
     this.clearAuthData();
     this.router.navigate(['/login']);
   }
 
+  // ============ PRIVATE METHODS ============
   private checkExistingAuth(): void {
     const token = this.getToken();
     const userData =
@@ -164,6 +184,8 @@ export class AuthService {
         console.error('Error parsing user data:', error);
         this.clearAuthData();
       }
+    } else {
+      console.log('ℹ️ No existing auth found');
     }
   }
 

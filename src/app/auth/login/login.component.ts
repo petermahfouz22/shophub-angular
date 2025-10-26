@@ -209,16 +209,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   private navigateAfterLogin(): void {
-    // يمكنك إضافة منطق التنقل بناءً على دور المستخدم هنا
-    // مثال:
-    // const user = this.authService.getCurrentUser();
-    // if (user?.role === 'admin') {
-    //   this.router.navigate(['/admin/dashboard']);
-    // } else {
-    //   this.router.navigate(['/dashboard']);
-    // }
-
-    this.router.navigate(['/profile']); // التنقل الافتراضي
+    this.router.navigate(['/profile']);
   }
 
   private showSuccessMessage(message: string): void {
@@ -241,10 +232,5 @@ export class LoginComponent implements OnInit, OnDestroy {
       rememberMe: false,
     });
     this.errorMessage = '';
-  }
-
-  // Forgot password handler
-  onForgotPassword(): void {
-    this.router.navigate(['/forgot-password']);
   }
 }

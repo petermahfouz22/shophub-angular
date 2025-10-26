@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { ProductsComponent } from './products/products.component';
 import { SignUpComponent } from './auth/sign-up/sign-up.component';
-// import { LoginComponent } from './auth/login/login.component';
 // import { AuthGuard } from './guards/auth.guard';
 // import { roleGuard } from './guards/role.guard';
 import {
@@ -28,6 +27,8 @@ import { ProfileComponent } from './profile/profile.component';
 import { EditProfileComponent } from './roles/User/edit-profile/edit-profile.component';
 import { SettingComponent } from './setting/setting.component';
 import { GoogleCallbackComponent } from './auth/google-callback/google-callback.component';
+import { ForgotPasswordComponent } from './auth/forget-password/forget-password.component';
+import { ResetPasswordComponent } from './auth/forget-password/reset-password/reset-password.component';
 export const routes: Routes = [
   //?default-Route----------------------------
   {
@@ -50,7 +51,8 @@ export const routes: Routes = [
   { path: 'signup', component: SignUpComponent },
   { path: 'login', component: LoginComponent },
   { path: 'auth/google/callback', component: GoogleCallbackComponent },
-
+  { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: 'reset-password', component: ResetPasswordComponent },
   //?------------------------------------------
 
   //?products----------------------------------
