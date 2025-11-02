@@ -1,15 +1,21 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ProductComponent } from '../../products/product/product.component';
 import { ProductService } from '../../services/product.service';
+import { Product } from '../../interfaces/product';
 
 @Component({
   selector: 'app-featured-products',
   imports: [ProductComponent],
   templateUrl: './featured-products.component.html',
-  styleUrl: './featured-products.component.css',
 })
-export class FeaturedProductsComponent {
+export class FeaturedProductsComponent implements OnInit {
+  products: Product[] = [];
   private productService = inject(ProductService);
-  products = this.productService.products();
-  limitedProducts = this.products.slice(0, 4);
+  ngOnInit(): void {
+    this.productService.getProducts().subscribe({
+      next: (data) => {
+        this.products = data.slice(0, 4);
+      },
+    });
+  }
 }

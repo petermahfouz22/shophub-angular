@@ -1,41 +1,41 @@
-import { Component, inject, input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { Product } from '../../interfaces/product';
-import { CartService } from './../../services/cart.service';
+import { CartService } from '../../services/cart.service';
 import { FavoriteService } from '../../services/favorite.service';
-import { NgIf } from '@angular/common';
-import { ProductService } from '../../services/product.service';
-// import { ImageAspectRatioDirective } from '../product.directive';
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-product',
-  imports: [NgIf],
+  standalone: true,
+  imports: [],
   templateUrl: './product.component.html',
-  styleUrl: './product.component.css',
+
 })
 export class ProductComponent {
-  product = input.required<Product>();
-  private cartService = inject(CartService);
-  private favoriteService = inject(FavoriteService);
-  private productService = inject(ProductService);
+  @Input({ required: true }) product!: Product;
+  constructor(
+    private favoriteService: FavoriteService,
+    private router: Router,
+    private cartService: CartService
+  ) {}
+
   onAddToCart(product: Product) {
     this.cartService.addToCart(product);
   }
 
   isFavorite(): boolean {
-    return this.product
-      ? this.favoriteService.isInFavorites(this.product().id)
-      : false;
+    return this.favoriteService.isInFavorites(this.product.id!);
   }
 
   toggleFavorite(): void {
-    if (this.product) {
-      if (this.isFavorite()) {
-        this.favoriteService.removeFromFavorites(this.product().id);
-      } else {
-        this.favoriteService.addToFavorites(this.product());
-      }
+    if (this.isFavorite()) {
+      this.favoriteService.removeFromFavorites(this.product.id!);
+    } else {
+      this.favoriteService.addToFavorites(this.product);
     }
   }
+
   routing(productId: number) {
-    this.productService.routing(productId);
+    this.router.navigate(['/products', productId]); // ✅ يفتح صفحة تفاصيل المنتج
   }
 }

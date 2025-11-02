@@ -14,12 +14,11 @@ interface PolicySection {
   standalone: true,
   imports: [CommonModule],
   templateUrl: './privacy-policy.component.html',
-  styleUrls: ['./privacy-policy.component.css']
 })
 export class PrivacyPolicyComponent {
   lastUpdated = 'January 1, 2024';
   effectiveDate = 'January 1, 2024';
-  
+
   // Table of Contents navigation
   activeSection = signal('introduction');
 
@@ -31,14 +30,14 @@ export class PrivacyPolicyComponent {
       content: [
         'At ShopHub ("we," "our," or "us"), we are committed to protecting your privacy and personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our website, mobile application, and services (collectively, the "Services").',
         'Please read this Privacy Policy carefully. By accessing or using our Services, you agree to the collection and use of information in accordance with this policy. If you do not agree with the terms of this Privacy Policy, please do not access or use our Services.',
-        'We reserve the right to make changes to this Privacy Policy at any time. We will alert you about any changes by updating the "Last Updated" date of this Privacy Policy.'
-      ]
+        'We reserve the right to make changes to this Privacy Policy at any time. We will alert you about any changes by updating the "Last Updated" date of this Privacy Policy.',
+      ],
     },
     {
       id: 'information-collection',
       title: 'Information We Collect',
       content: [
-        'We collect several types of information from and about users of our Services, including:'
+        'We collect several types of information from and about users of our Services, including:',
       ],
       subsections: [
         {
@@ -47,8 +46,8 @@ export class PrivacyPolicyComponent {
             '• Contact Information: Name, email address, phone number, shipping address',
             '• Account Information: Username, password, profile picture',
             '• Payment Information: Credit card details, billing address (processed securely by our payment processors)',
-            '• Demographic Information: Age, gender, preferences (optional)'
-          ]
+            '• Demographic Information: Age, gender, preferences (optional)',
+          ],
         },
         {
           title: 'Automatically Collected Information',
@@ -56,8 +55,8 @@ export class PrivacyPolicyComponent {
             '• Device Information: IP address, browser type, operating system, device type',
             '• Usage Data: Pages visited, time spent, click patterns, search queries',
             '• Location Data: General location based on IP address or precise location with your consent',
-            '• Cookies and Tracking Technologies: See our Cookie Policy for details'
-          ]
+            '• Cookies and Tracking Technologies: See our Cookie Policy for details',
+          ],
         },
         {
           title: 'Information from Third Parties',
@@ -65,16 +64,16 @@ export class PrivacyPolicyComponent {
             '• Social media platforms when you connect your account',
             '• Payment processors for transaction verification',
             '• Analytics providers for service improvement',
-            '• Marketing partners for personalized offers'
-          ]
-        }
-      ]
+            '• Marketing partners for personalized offers',
+          ],
+        },
+      ],
     },
     {
       id: 'how-we-use',
       title: 'How We Use Your Information',
       content: [
-        'We use the information we collect for various business purposes, including:'
+        'We use the information we collect for various business purposes, including:',
       ],
       subsections: [
         {
@@ -83,8 +82,8 @@ export class PrivacyPolicyComponent {
             '• Process transactions and deliver products',
             '• Create and manage your account',
             '• Provide customer support',
-            '• Send order confirmations and updates'
-          ]
+            '• Send order confirmations and updates',
+          ],
         },
         {
           title: 'Personalization',
@@ -92,8 +91,8 @@ export class PrivacyPolicyComponent {
             '• Recommend products based on your preferences',
             '• Customize your shopping experience',
             '• Show relevant content and advertisements',
-            '• Remember your preferences and settings'
-          ]
+            '• Remember your preferences and settings',
+          ],
         },
         {
           title: 'Communication',
@@ -101,8 +100,8 @@ export class PrivacyPolicyComponent {
             '• Send promotional emails and newsletters (with your consent)',
             '• Respond to your inquiries and requests',
             '• Send important service announcements',
-            '• Conduct surveys and gather feedback'
-          ]
+            '• Conduct surveys and gather feedback',
+          ],
         },
         {
           title: 'Analytics and Improvement',
@@ -110,8 +109,8 @@ export class PrivacyPolicyComponent {
             '• Analyze usage patterns and trends',
             '• Improve our Services and user experience',
             '• Develop new features and products',
-            '• Monitor and prevent technical issues'
-          ]
+            '• Monitor and prevent technical issues',
+          ],
         },
         {
           title: 'Security and Legal',
@@ -119,16 +118,16 @@ export class PrivacyPolicyComponent {
             '• Protect against fraud and unauthorized transactions',
             '• Enforce our Terms and Conditions',
             '• Comply with legal obligations',
-            '• Protect our rights and property'
-          ]
-        }
-      ]
+            '• Protect our rights and property',
+          ],
+        },
+      ],
     },
     {
       id: 'information-sharing',
       title: 'Information Sharing and Disclosure',
       content: [
-        'We do not sell your personal information to third parties. We may share your information in the following circumstances:'
+        'We do not sell your personal information to third parties. We may share your information in the following circumstances:',
       ],
       subsections: [
         {
@@ -139,8 +138,8 @@ export class PrivacyPolicyComponent {
             '• Shipping carriers (UPS, FedEx, DHL)',
             '• Cloud hosting providers',
             '• Customer support platforms',
-            '• Marketing and analytics partners'
-          ]
+            '• Marketing and analytics partners',
+          ],
         },
         {
           title: 'Legal Requirements',
@@ -149,31 +148,31 @@ export class PrivacyPolicyComponent {
             '• Court orders or legal processes',
             '• Government requests',
             '• Enforcement of our agreements',
-            '• Protection of rights and safety'
-          ]
+            '• Protection of rights and safety',
+          ],
         },
         {
           title: 'Business Transfers',
           content: [
             'In the event of a merger, acquisition, or sale of all or a portion of our assets, your information may be transferred to the new entity.',
-            'We will notify you via email and/or prominent notice on our Services of any change in ownership or uses of your information.'
-          ]
+            'We will notify you via email and/or prominent notice on our Services of any change in ownership or uses of your information.',
+          ],
         },
         {
           title: 'With Your Consent',
           content: [
             'We may share your information with third parties when you have given us explicit consent to do so.',
-            'You can withdraw your consent at any time by contacting us or adjusting your account settings.'
-          ]
-        }
-      ]
+            'You can withdraw your consent at any time by contacting us or adjusting your account settings.',
+          ],
+        },
+      ],
     },
     {
       id: 'data-security',
       title: 'Data Security',
       content: [
         'We implement appropriate technical and organizational security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction.',
-        'Our security measures include:'
+        'Our security measures include:',
       ],
       subsections: [
         {
@@ -181,16 +180,16 @@ export class PrivacyPolicyComponent {
           content: [
             '• SSL/TLS encryption for data transmission',
             '• Encryption of sensitive data at rest',
-            '• Secure payment processing through PCI-compliant providers'
-          ]
+            '• Secure payment processing through PCI-compliant providers',
+          ],
         },
         {
           title: 'Access Controls',
           content: [
             '• Role-based access to personal information',
             '• Multi-factor authentication for administrative access',
-            '• Regular security audits and assessments'
-          ]
+            '• Regular security audits and assessments',
+          ],
         },
         {
           title: 'Other Measures',
@@ -198,17 +197,17 @@ export class PrivacyPolicyComponent {
             '• Regular security updates and patches',
             '• Firewall protection and intrusion detection',
             '• Employee security training',
-            '• Incident response procedures'
-          ]
-        }
-      ]
+            '• Incident response procedures',
+          ],
+        },
+      ],
     },
     {
       id: 'data-retention',
       title: 'Data Retention',
       content: [
         'We retain your personal information only for as long as necessary to fulfill the purposes outlined in this Privacy Policy, unless a longer retention period is required or permitted by law.',
-        'Our retention periods include:'
+        'Our retention periods include:',
       ],
       subsections: [
         {
@@ -216,32 +215,32 @@ export class PrivacyPolicyComponent {
           content: [
             '• Active accounts: Until account deletion request',
             '• Inactive accounts: 3 years of inactivity',
-            '• Transaction records: 7 years for tax and legal purposes'
-          ]
+            '• Transaction records: 7 years for tax and legal purposes',
+          ],
         },
         {
           title: 'Marketing Data',
           content: [
             '• Email subscribers: Until unsubscribe request',
             '• Cookie data: As specified in Cookie Policy',
-            '• Analytics data: 26 months aggregated and anonymized'
-          ]
+            '• Analytics data: 26 months aggregated and anonymized',
+          ],
         },
         {
           title: 'Other Data',
           content: [
             '• Customer support inquiries: 3 years after resolution',
             '• Legal documents: As required by applicable law',
-            '• Backup data: 30 days before permanent deletion'
-          ]
-        }
-      ]
+            '• Backup data: 30 days before permanent deletion',
+          ],
+        },
+      ],
     },
     {
       id: 'your-rights',
       title: 'Your Rights and Choices',
       content: [
-        'Depending on your location, you may have certain rights regarding your personal information:'
+        'Depending on your location, you may have certain rights regarding your personal information:',
       ],
       subsections: [
         {
@@ -249,24 +248,24 @@ export class PrivacyPolicyComponent {
           content: [
             '• Right to access your personal information',
             '• Right to receive your data in a portable format',
-            '• Right to know about data processing activities'
-          ]
+            '• Right to know about data processing activities',
+          ],
         },
         {
           title: 'Correction and Deletion',
           content: [
             '• Right to correct inaccurate information',
             '• Right to delete your personal information ("right to be forgotten")',
-            '• Right to restrict processing in certain circumstances'
-          ]
+            '• Right to restrict processing in certain circumstances',
+          ],
         },
         {
           title: 'Objections and Controls',
           content: [
             '• Right to object to processing for direct marketing',
             '• Right to withdraw consent at any time',
-            '• Right to lodge complaints with supervisory authorities'
-          ]
+            '• Right to lodge complaints with supervisory authorities',
+          ],
         },
         {
           title: 'How to Exercise Your Rights',
@@ -275,17 +274,17 @@ export class PrivacyPolicyComponent {
             '• Updating your account information in settings',
             '• Using our self-service tools',
             '• Contacting us at privacy@shophub.com',
-            '• Using opt-out mechanisms in marketing communications'
-          ]
-        }
-      ]
+            '• Using opt-out mechanisms in marketing communications',
+          ],
+        },
+      ],
     },
     {
       id: 'cookies-tracking',
       title: 'Cookies and Tracking Technologies',
       content: [
         'We use cookies and similar tracking technologies to track activity on our Services and store certain information.',
-        'Types of cookies we use:'
+        'Types of cookies we use:',
       ],
       subsections: [
         {
@@ -293,34 +292,34 @@ export class PrivacyPolicyComponent {
           content: [
             'Required for basic site functionality',
             'Enable security and authentication',
-            'Cannot be disabled without affecting site operation'
-          ]
+            'Cannot be disabled without affecting site operation',
+          ],
         },
         {
           title: 'Performance Cookies',
           content: [
             'Help us understand how visitors interact with our Services',
             'Collect anonymous statistical data',
-            'Can be disabled through browser settings'
-          ]
+            'Can be disabled through browser settings',
+          ],
         },
         {
           title: 'Functional Cookies',
           content: [
             'Remember your preferences and settings',
             'Enable personalized features',
-            'Can be disabled through browser settings'
-          ]
+            'Can be disabled through browser settings',
+          ],
         },
         {
           title: 'Advertising Cookies',
           content: [
             'Used to deliver relevant advertisements',
             'Track campaign performance',
-            'Can be managed through our cookie preferences tool'
-          ]
-        }
-      ]
+            'Can be managed through our cookie preferences tool',
+          ],
+        },
+      ],
     },
     {
       id: 'international-transfers',
@@ -331,24 +330,24 @@ export class PrivacyPolicyComponent {
         '• Standard contractual clauses approved by relevant authorities',
         '• Privacy Shield framework (where applicable)',
         '• Binding corporate rules',
-        '• Other legally approved mechanisms'
-      ]
+        '• Other legally approved mechanisms',
+      ],
     },
     {
       id: 'children-privacy',
       title: "Children's Privacy",
       content: [
         'Our Services are not intended for children under the age of 16. We do not knowingly collect personal information from children under 16.',
-        'If you are a parent or guardian and believe your child has provided us with personal information, please contact us immediately. If we become aware that we have collected personal information from children without verification of parental consent, we take steps to remove that information from our servers.'
-      ]
+        'If you are a parent or guardian and believe your child has provided us with personal information, please contact us immediately. If we become aware that we have collected personal information from children without verification of parental consent, we take steps to remove that information from our servers.',
+      ],
     },
     {
       id: 'third-party-links',
       title: 'Third-Party Links',
       content: [
-        'Our Services may contain links to third-party websites, applications, or services that are not operated by us. If you click on a third-party link, you will be directed to that third party\'s site.',
-        'We strongly advise you to review the Privacy Policy of every site you visit. We have no control over and assume no responsibility for the content, privacy policies, or practices of any third-party sites or services.'
-      ]
+        "Our Services may contain links to third-party websites, applications, or services that are not operated by us. If you click on a third-party link, you will be directed to that third party's site.",
+        'We strongly advise you to review the Privacy Policy of every site you visit. We have no control over and assume no responsibility for the content, privacy policies, or practices of any third-party sites or services.',
+      ],
     },
     {
       id: 'contact-us',
@@ -359,8 +358,8 @@ export class PrivacyPolicyComponent {
         'Address: 123 Commerce Street, Business City, BC 12345',
         'Phone: +1 (555) 123-4567',
         'Data Protection Officer: dpo@shophub.com',
-        'We will respond to your inquiry within 30 days.'
-      ]
+        'We will respond to your inquiry within 30 days.',
+      ],
     },
     {
       id: 'changes-policy',
@@ -368,9 +367,9 @@ export class PrivacyPolicyComponent {
       content: [
         'We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date.',
         'We will also notify you via email and/or a prominent notice on our Services prior to the change becoming effective, if the changes are material.',
-        'You are advised to review this Privacy Policy periodically for any changes. Changes to this Privacy Policy are effective when they are posted on this page.'
-      ]
-    }
+        'You are advised to review this Privacy Policy periodically for any changes. Changes to this Privacy Policy are effective when they are posted on this page.',
+      ],
+    },
   ];
 
   // Scroll to section
@@ -384,7 +383,7 @@ export class PrivacyPolicyComponent {
 
       window.scrollTo({
         top: offsetPosition,
-        behavior: 'smooth'
+        behavior: 'smooth',
       });
     }
   }

@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
   selector: 'app-contact-us',
   imports: [ ReactiveFormsModule,CommonModule],
   templateUrl: './contact-us.component.html',
-  styleUrl: './contact-us.component.css',
+
 })
 export class ContactUsComponent {
   contactForm: FormGroup;

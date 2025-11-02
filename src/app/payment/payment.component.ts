@@ -7,21 +7,13 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { CartService } from '../services/cart.service';
-
-interface OrderItem {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
-
+import { OrderItem } from '../interfaces/order-item';
 @Component({
   selector: 'app-payment',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './payment.component.html',
-  styleUrls: ['./payment.component.css'],
+
 })
 export class PaymentComponent implements OnInit {
   private cartService = inject(CartService);

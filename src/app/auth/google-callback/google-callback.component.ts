@@ -7,7 +7,6 @@ import { CommonModule } from '@angular/common';
   selector: 'app-google-callback',
   imports: [CommonModule],
   templateUrl: './google-callback.component.html',
-  styleUrl: './google-callback.component.css',
 })
 export class GoogleCallbackComponent implements OnInit {
   status: 'loading' | 'success' | 'error' = 'loading';

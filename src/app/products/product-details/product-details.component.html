@@ -1,121 +1,127 @@
 <div class="product-details-container p-6 max-w-6xl mx-auto" *ngIf="product">
-    <div class="product-details flex flex-col md:flex-row gap-10 bg-white rounded-2xl shadow-lg p-6">
-        <!-- Product Image -->
-        <div class="product-image flex-1 flex justify-center items-center">
-            <img [src]="product.image" [alt]="product.name" class="w-full max-w-sm rounded-xl object-cover shadow-md" />
-        </div>
-
-        <!-- Product Info -->
-        <div class="product-info flex-1 space-y-6">
-            <h1 class="product-name text-3xl font-bold text-gray-900">{{ product.name }}</h1>
-
-            <div class="product-rating flex items-center gap-2">
-                <div class="stars text-yellow-400 text-xl">
-                    <span class="star" *ngFor="let star of [1,2,3,4,5]"
-                        [class.text-gray-300]="star > product.rating">★</span>
-                </div>
-                <span class="rating-text text-sm text-gray-500">({{ product.reviews }} reviews)</span>
-            </div>
-
-            <div class="product-price">
-                <span class="current-price text-2xl font-semibold text-emerald-600">${{ product.price }}</span>
-            </div>
-
-            <div class="product-description text-gray-700 leading-relaxed">
-                <p>{{ product.description }}</p>
-            </div>
-
-            <!-- Product Options -->
-            <div class="product-options">
-                <div class="quantity-selector flex items-center gap-4">
-                    <label class="text-gray-700 font-medium">Quantity:</label>
-                    <div class="quantity-controls flex items-center gap-2 border rounded-lg px-3 py-1">
-                        <button class="text-gray-700 hover:text-emerald-600 text-lg font-semibold" (click)="decreaseQuantity()">-</button>
-                        <span class="text-gray-800 font-medium">{{item_quantity()}}</span>
-                        <button class="text-gray-700 hover:text-emerald-600 text-lg font-semibold" (click)="increaseQuantity()">+</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="action-buttons flex flex-wrap gap-3">
-                <button (click)="onAddToCart(product)"
-                    class="btn-primary bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-6 py-2 rounded-lg shadow">
-                    Add to Cart
-                </button>
-                <button [routerLink]="isSignedUser?['payment/',product.id]: '/signup' "
-                    class="btn-secondary bg-gray-800 hover:bg-gray-900 text-white font-medium px-6 py-2 rounded-lg shadow">
-                    Buy Now
-                </button>
-                <button (click)="toggleFavorite()"
-                    class="btn-wishlist p-3 rounded-lg border transition-all duration-300 group relative overflow-hidden"
-                    [class.bg-red-50]="isFavorite()" [class.border-red-200]="isFavorite()"
-                    [class.bg-white]="!isFavorite()" [class.border-gray-300]="!isFavorite()"
-                    [class.hover:bg-red-100]="isFavorite()" [class.hover:bg-gray-100]="!isFavorite()">
-
-                    <!-- Heart Icon -->
-                    <svg class="h-6 w-6 transition-all duration-300" [class.text-red-500]="isFavorite()"
-                        [class.scale-110]="isFavorite()" [class.text-gray-600]="!isFavorite()"
-                        [class.group-hover:text-red-500]="!isFavorite()" [class.group-hover:scale-110]="!isFavorite()"
-                        [class.fill-red-500]="isFavorite()" [class.fill-transparent]="!isFavorite()"
-                        stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                    </svg>
-
-                    <!-- Pulse Effect when favorite -->
-                    <div *ngIf="isFavorite()"
-                        class="absolute inset-0 border-2 border-red-300 rounded-lg opacity-0 animate-ping">
-                    </div>
-
-                    <!-- Tooltip -->
-                    <div
-                        class="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none">
-                        {{ isFavorite() ? 'Remove from favorites' : 'Add to favorites' }}
-                    </div>
-                </button>
-            </div>
-
-            <!-- Additional Info -->
-            <div class="additional-info space-y-2 text-sm text-gray-600 pt-3 border-t">
-                <div class="info-item flex gap-2">
-                    <span class="label font-medium">Category:</span>
-                    <span class="value">{{ product.category }}</span>
-                </div>
-                <div class="info-item flex gap-2">
-                    <span class="label font-medium">Product ID:</span>
-                    <span class="value">#{{ product.id }}</span>
-                </div>
-            </div>
-        </div>
+  <div class="product-details flex flex-col md:flex-row gap-10 bg-white rounded-2xl shadow-lg p-6">
+    <!-- Product Image -->
+    <div class="product-image flex-1 flex justify-center items-center">
+      <img
+        [src]="product.image_url"
+        [alt]="product.name"
+        class="w-full max-w-sm rounded-xl object-cover shadow-md"
+      />
     </div>
 
-    <!-- Product Tabs -->
-    <div class="product-tabs mt-10 bg-white rounded-2xl shadow p-6">
-        <div class="tab-headers flex border-b">
-            <button class="tab-header px-4 py-2 font-semibold text-emerald-600 border-b-2 border-emerald-600">
-                Description
+    <!-- Product Info -->
+    <div class="product-info flex-1 space-y-6">
+      <h1 class="product-name text-3xl font-bold text-gray-900">{{ product.name }}</h1>
+
+      <div class="product-rating flex items-center gap-2">
+        <div class="stars text-yellow-400 text-xl">
+          <span class="star" *ngFor="let star of [1,2,3,4,5]">★</span>
+        </div>
+        <span class="rating-text text-sm text-gray-500">( reviews)</span>
+      </div>
+
+      <div class="product-price">
+        <span class="current-price text-2xl font-semibold text-emerald-600">
+          ${{ product.price }}
+        </span>
+        <span
+          *ngIf="product.discount_price"
+          class="text-gray-400 line-through ml-2"
+        >
+          ${{ product.discount_price }}
+        </span>
+      </div>
+
+      <div class="product-description text-gray-700 leading-relaxed">
+        <p>{{ product.description }}</p>
+      </div>
+
+      <!-- Product Options -->
+      <div class="product-options">
+        <div class="quantity-selector flex items-center gap-4">
+          <label class="text-gray-700 font-medium">Quantity:</label>
+          <div class="quantity-controls flex items-center gap-2 border rounded-lg px-3 py-1">
+            <button
+              class="text-gray-700 hover:text-emerald-600 text-lg font-semibold"
+            >
+              -
             </button>
-            <button class="tab-header px-4 py-2 text-gray-600 hover:text-emerald-600">
-                <!-- Reviews ({{ product.reviews }}) -->
+            <span class="text-gray-800 font-medium">1</span>
+            <button
+              class="text-gray-700 hover:text-emerald-600 text-lg font-semibold"
+            >
+              +
             </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons flex flex-wrap gap-3">
+        <button
+          class="btn-primary bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-6 py-2 rounded-lg shadow"
+        >
+          Add to Cart
+        </button>
+        <button
+          class="btn-secondary bg-gray-800 hover:bg-gray-900 text-white font-medium px-6 py-2 rounded-lg shadow"
+        >
+          Buy Now
+        </button>
+      </div>
+
+      <!-- Additional Info -->
+      <div class="additional-info space-y-2 text-sm text-gray-600 pt-3 border-t">
+        <div class="info-item flex gap-2">
+          <span class="label font-medium">Category:</span>
+          <span class="value text-gray-800">{{ product.category?.name || '—' }}</span>
         </div>
 
-        <div class="tab-content mt-6">
-            <div class="tab-panel">
-                <h3 class="text-lg font-semibold text-gray-800 mb-2">Product Description</h3>
-                <p class="text-gray-700 leading-relaxed">{{ product.description }}</p>
-            </div>
+        <div class="info-item flex gap-2">
+          <span class="label font-medium">Brand:</span>
+          <span class="value text-gray-800">{{ product.brand?.name || '—' }}</span>
         </div>
+
+        <div class="info-item flex gap-2">
+          <span class="label font-medium">Product ID:</span>
+          <span class="value">#{{ product.id }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Tabs -->
+  <div class="product-tabs mt-10 bg-white rounded-2xl shadow p-6">
+    <div class="tab-headers flex border-b">
+      <button
+        class="tab-header px-4 py-2 font-semibold text-emerald-600 border-b-2 border-emerald-600"
+      >
+        Description
+      </button>
+      <button class="tab-header px-4 py-2 text-gray-600 hover:text-emerald-600">
+        Reviews
+      </button>
     </div>
 
-    <!-- Related Products -->
-    <div class="related-products mt-12">
-        <h2 class="text-2xl font-bold text-gray-900 mb-6">You May Also Like</h2>
-        <div class="products-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <!-- related products go here -->
-        </div>
+    <div class="tab-content mt-6">
+      <div class="tab-panel">
+        <h3 class="text-lg font-semibold text-gray-800 mb-2">
+          Product Description
+        </h3>
+        <p class="text-gray-700 leading-relaxed">{{ product.description }}</p>
+      </div>
     </div>
+  </div>
+
+  <!-- Related Products -->
+  <div class="related-products mt-12">
+    <h2 class="text-2xl font-bold text-gray-900 mb-6">You May Also Like</h2>
+    <div
+      class="products-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+    >
+      <!-- related products go here -->
+    </div>
+  </div>
 </div>
 
 <!-- Loading State -->
@@ -123,13 +129,24 @@
   class="not-found-container flex flex-col items-center justify-center h-96 text-center text-gray-600"
   *ngIf="!product"
 >
-  <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 text-red-500 mb-4" fill="none" viewBox="0 0 24 24"
-    stroke="currentColor">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-      d="M9.172 9.172a4 4 0 015.656 5.656M12 2a10 10 0 100 20 10 10 0 000-20z" />
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="w-16 h-16 text-red-500 mb-4"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M9.172 9.172a4 4 0 015.656 5.656M12 2a10 10 0 100 20 10 10 0 000-20z"
+    />
   </svg>
 
-  <p class="text-lg font-semibold mb-3">This product is not available right now.</p>
+  <p class="text-lg font-semibold mb-3">
+    This product is not available right now.
+  </p>
 
   <a
     routerLink="/products"

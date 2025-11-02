@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
   selector: 'app-social-login',
   imports: [],
   templateUrl: './social-login.component.html',
-  styleUrl: './social-login.component.css',
 })
 export class SocialLoginComponent {
   loading = false;

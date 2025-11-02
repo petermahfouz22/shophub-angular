@@ -17,7 +17,6 @@ import { SocialLoginComponent } from '../social-login/social-login.component';
   selector: 'app-sign-up',
   imports: [ReactiveFormsModule, CommonModule, SocialLoginComponent],
   templateUrl: './sign-up.component.html',
-  styleUrls: ['./sign-up.component.css'],
 })
 export class SignUpComponent implements OnInit {
   signupForm!: FormGroup;

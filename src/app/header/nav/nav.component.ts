@@ -7,13 +7,20 @@ import {
   signal,
 } from '@angular/core';
 import { CommonModule, NgIf } from '@angular/common';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  Router,
+  RouterLink,
+  RouterLinkActive,
+} from '@angular/router';
 
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { CartService } from './../../services/cart.service';
 import { FavoriteService } from '../../services/favorite.service';
 import { SearchComponent } from '../search/search.component';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-nav',
@@ -27,6 +34,7 @@ export class NavComponent implements OnInit, OnDestroy {
   private cartService = inject(CartService);
   private favoriteService = inject(FavoriteService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private authSubscription!: Subscription;
 
   // Search & UI State
@@ -51,6 +59,13 @@ export class NavComponent implements OnInit, OnDestroy {
   f: any = null;
 
   ngOnInit(): void {
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        const currentRoute = this.route.root.firstChild;
+        this.wantSearch = currentRoute?.snapshot.data?.['wantSearch'] || false;
+      });
+
     this.initializeAuth();
 
     this.authService.getCurrentUserObservable().subscribe((user) => {

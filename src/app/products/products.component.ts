@@ -5,6 +5,5 @@ import { ProductListPaginationComponent } from './product-list-pagination/produc
   selector: 'app-products',
   imports: [ProductListPaginationComponent],
   templateUrl: './products.component.html',
-  styleUrl: './products.component.css',
 })
 export class ProductsComponent {}

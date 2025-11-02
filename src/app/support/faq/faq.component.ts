@@ -13,7 +13,7 @@ interface FAQItem {
   selector: 'app-faq',
   imports: [CommonModule, FormsModule],
   templateUrl: './faq.component.html',
-  styleUrl: './faq.component.css',
+
 })
 export class FAQComponent {
   searchQuery = signal('');

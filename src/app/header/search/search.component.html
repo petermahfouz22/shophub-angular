@@ -29,11 +29,10 @@
         <!-- Products List -->
         <div class="p-2">
             @for(product of filteredProducts; track product.id){
-            <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-blue-50 cursor-pointer transition-all duration-200 group border border-transparent hover:border-blue-100"
-                (click)="routing(product.id)">
+            <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-blue-50 cursor-pointer transition-all duration-200 group border border-transparent hover:border-blue-100">
                 <!-- Product Image -->
                 <div class="flex-shrink-0 relative z-0">
-                    <img [src]="product.image" [alt]="product.name"
+                    <img [src]="product.image_url" [alt]="product.name"
                         class="w-12 h-12 object-cover rounded-lg border border-gray-200 group-hover:border-blue-200 transition-colors" />
                 </div>
 
@@ -43,7 +42,7 @@
                         class="text-sm font-semibold text-gray-900 truncate group-hover:text-blue-700 transition-colors">
                         {{ product.name }}
                     </h4>
-                    <p class="text-xs text-gray-500 mt-0.5">{{ product.category }}</p>
+                    <p class="text-xs text-gray-500 mt-0.5">{{product.category?.name}}</p>
                 </div>
 
                 <!-- Price -->

@@ -7,7 +7,7 @@ import { RouterLink } from '@angular/router';
   selector: 'app-cart',
   imports: [CurrencyPipe, RouterLink],
   templateUrl: './cart.component.html',
-  styleUrl: './cart.component.css',
+
 })
 export class CartComponent {
   private cartService = inject(CartService);
@@ -19,24 +19,18 @@ export class CartComponent {
   total = computed(() => this.subtotal() + this.tax());
   totalItems = computed(() => this.cartService.getTotalItems());
 
-  increaseQuantity(item: CartItem) {
-    this.cartService.increaseQuantity(item.id);
-  }
+increaseQuantity(item: CartItem) {
+  if (!item?.id) return;
+  this.cartService.increaseQuantity(item.id!);
+}
 
-  decreaseQuantity(item: CartItem) {
-    this.cartService.decreaseQuantity(item.id);
-  }
+decreaseQuantity(item: CartItem) {
+  if (!item?.id) return;
+  this.cartService.decreaseQuantity(item.id!);
+}
 
-  removeItem(item: CartItem) {
-    this.cartService.removeFromCart(item.id);
-  }
-
-  // constructor(){
-  //   let user = {
-  //     name:'peter',
-  //     age:20,
-  //   }
-
-  //   console.log({...user,skill:'HTML'});
-  // }
+removeItem(item: CartItem) {
+  if (!item?.id) return;
+  this.cartService.removeFromCart(item.id!);
+}
 }

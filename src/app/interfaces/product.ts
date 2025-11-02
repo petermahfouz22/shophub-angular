@@ -1,26 +1,34 @@
 export interface Product {
-  id: number;
+  id?: number;
   name: string;
   description: string;
+  category_id: number;
+  brand_id: number;
   price: number;
-  image: string;
-  category: string;
-  rating: number;
-  reviews: number;
-  isNew: boolean;
+  discount_price?: number;
+  stock: number;
+  sku: string;
+  image_url?: string;
+  gallery?: string[];
+  rating?: number;
+  status: 'active' | 'inactive';
+  category?: Category;
+  brand?: Brand;
 }
-export interface FilterState {
-  categories: string[];
-  maxPrice: number;
-  minRating: number;
-}
-export interface category {
+
+export interface Category {
+  id: number;
   name: string;
-  count: number;
+  status: string;
 }
-// interface reviews {
-//   user: string;
-//   comment: string;
-//   rating: number;
-//   date: string;
-// }
+
+export interface Brand {
+  id: number;
+  name: string;
+  status: string;
+}
+
+export interface ProductFormData {
+  categories: Category[];
+  brands: Brand[];
+}

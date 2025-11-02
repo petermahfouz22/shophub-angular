@@ -22,13 +22,13 @@ import {
   UserDetailsComponent,
   resolveUserData,
 } from './roles/Admin/manage-users/users/user-details/user-details.component';
-// import { NewProductComponent } from './roles/Admin/manage-products/new-product/new-product.component';
 import { ProfileComponent } from './profile/profile.component';
 import { EditProfileComponent } from './roles/User/edit-profile/edit-profile.component';
 import { SettingComponent } from './setting/setting.component';
 import { GoogleCallbackComponent } from './auth/google-callback/google-callback.component';
 import { ForgotPasswordComponent } from './auth/forget-password/forget-password.component';
 import { ResetPasswordComponent } from './auth/forget-password/reset-password/reset-password.component';
+import { NewProductComponent } from './roles/Admin/manage-products/add-product/new-product.component';
 export const routes: Routes = [
   //?default-Route----------------------------
   {
@@ -71,6 +71,7 @@ export const routes: Routes = [
     },
     // resolve: {productData:resolvePoductData},
   },
+  { path: 'new-product', component: NewProductComponent },
   //?------------------------------------------
 
   //?userSection-------------------------------

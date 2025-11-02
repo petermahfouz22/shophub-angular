@@ -6,6 +6,5 @@ import { FeaturedProductsComponent } from './featured-products/featured-products
   selector: 'app-home',
   imports: [HeroComponent, FeaturedProductsComponent],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css',
 })
 export class HomeComponent {}

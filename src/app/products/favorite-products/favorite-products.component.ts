@@ -8,18 +8,17 @@ import { CartService } from './../../services/cart.service';
   selector: 'app-favorite-products',
   imports: [FormsModule],
   templateUrl: './favorite-products.component.html',
-  styleUrl: './favorite-products.component.css',
 })
 export class FavoriteProductsComponent {
   private cartService = inject(CartService);
   private favoriteService = inject(FavoriteService);
-  favoriteProducts = this.favoriteService.productFavorite;
+  favoriteProducts = this.favoriteService.productFavorite();
   searchInput = signal<string>('');
 
   // المنتجات المصفاة بناءً على البحث
   filteredProducts = computed(() => {
     const searchTerm = this.searchInput().toLowerCase().trim();
-    const products = this.favoriteProducts();
+    const products = this.favoriteProducts;
 
     if (!searchTerm) {
       return products;
@@ -27,14 +26,12 @@ export class FavoriteProductsComponent {
 
     return products.filter(
       (product) =>
-        product.name.toLowerCase().includes(searchTerm) ||
-        product.description.toLowerCase().includes(searchTerm) ||
-        product.category.toLowerCase().includes(searchTerm)
+        product.name.toLowerCase().includes(searchTerm)
     );
   });
 
   // عدد المنتجات المفضلة
-  favoritesCount = computed(() => this.favoriteProducts().length);
+  favoritesCount = computed(() => this.favoriteProducts.length);
 
   // البحث في المنتجات
   searchItem(): void {
@@ -49,10 +46,10 @@ export class FavoriteProductsComponent {
 
   // إزالة منتج من المفضلة
   removeFromFavorites(product: Product): void {
-    this.favoriteService.removeFromFavorites(product.id);
+    // this.favoriteService.removeFromFavorites(product.id);
   }
   onAddToCart(product: Product) {
-    this.cartService.addToCart(product);
+    // this.cartService.addToCart(product);
   }
   // Add these variables to your component
   selectedCategory: string = '';

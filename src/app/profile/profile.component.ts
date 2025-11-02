@@ -11,7 +11,6 @@ import { AuthService } from '../services/auth.service';
   selector: 'app-profile',
   imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.css'],
 })
 export class ProfileComponent implements OnInit {
   profileForm: FormGroup;

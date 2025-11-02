@@ -8,7 +8,6 @@ import { User } from '../../../../interfaces/user';
   selector: 'app-users',
   imports: [CommonModule],
   templateUrl: './users.component.html',
-  styleUrl: './users.component.css',
 })
 export class UsersComponent {
   route = inject(Router);

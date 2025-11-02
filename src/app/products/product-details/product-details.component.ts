@@ -23,70 +23,23 @@ import { FavoriteService } from '../../services/favorite.service';
   selector: 'app-product-details',
   imports: [NgFor, NgIf, RouterLink],
   templateUrl: './product-details.component.html',
-  styleUrl: './product-details.component.css',
+
 })
 export class ProductDetailsComponent implements OnInit {
-  isSignedUser: boolean = true;
-  item_quantity = signal(0);
   product?: Product;
+
   constructor(
-    private activatedRouter: ActivatedRoute,
-    private ProductService: ProductService,
-    private cartService: CartService,
-    private favoriteService: FavoriteService
+    private route: ActivatedRoute,
+    private productService: ProductService
   ) {}
-  increaseQuantity() {
-    this.item_quantity.set(this.item_quantity() + 1);
-  }
-  decreaseQuantity() {
-    this.item_quantity.set(
-      this.item_quantity() - 1 < 1 ? 1 : this.item_quantity() - 1
-    );
-  }
-
-  onAddToCart(product: Product) {
-    this.cartService.addToCart(product);
-  }
-
-  isFavorite(): boolean {
-    return this.product
-      ? this.favoriteService.isInFavorites(this.product.id)
-      : false;
-  }
-
-  toggleFavorite(): void {
-    if (this.product) {
-      if (this.isFavorite()) {
-        this.favoriteService.removeFromFavorites(this.product.id);
-      } else {
-        this.favoriteService.addToFavorites(this.product);
-      }
-    }
-  }
 
   ngOnInit(): void {
-    this.activatedRouter.paramMap.subscribe({
-      next: (data) => {
-        this.product = this.ProductService.products().find(
-          (e) => e.id === Number(data.get('id'))
-        );
-        // console.log(this.product);
-
-        // console.log(
-        //   this.ProductService
-        //     .products()
-        //     .find((e) => e.id === Number(data.get('id')))
-        // );
-        // console.log(this.product);
-      },
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+    this.productService.getProduct(id).subscribe({
+      next: (data) => (this.product = data),
+      error: (err) => console.error(err),
     });
   }
-  // private route = inject(ActivatedRoute);
-  // productData!: Product;
-  // ngOnInit(): void {
-  //   this.productData = this.route.snapshot.data['productData'];
-  //   console.log('Resolved Product:', this.productData);
-  // }
 }
 // export const resolvePoductData: ResolveFn<Product | undefined> = (
 //   activatedRoute: ActivatedRouteSnapshot,

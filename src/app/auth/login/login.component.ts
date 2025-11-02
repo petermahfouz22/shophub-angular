@@ -21,7 +21,6 @@ import { SocialLoginComponent } from '../social-login/social-login.component';
     SocialLoginComponent,
   ],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit, OnDestroy {
   loginForm!: FormGroup;

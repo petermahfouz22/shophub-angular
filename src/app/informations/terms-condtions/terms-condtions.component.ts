@@ -14,7 +14,7 @@ interface TermsSection {
   standalone: true,
   imports: [CommonModule],
   templateUrl: './terms-condtions.component.html',
-  styleUrl: './terms-condtions.component.css'
+
 })
 export class TermsConditionsComponent {
   lastUpdated = 'January 1, 2024';

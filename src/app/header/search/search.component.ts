@@ -2,18 +2,26 @@ import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { ProductService } from '../../services/product.service';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Product } from '../../interfaces/product';
 
 @Component({
   selector: 'app-search',
   imports: [FormsModule],
   templateUrl: './search.component.html',
-  styleUrl: './search.component.css',
 })
-export class SearchComponent {
+export class SearchComponent implements   OnInit{
+  products:Product[]=[]
   private ProductService = inject(ProductService);
   constructor(private router: Router) {}
+  ngOnInit():void{
+    this.ProductService.getProducts().subscribe({
+      next:(data)=>{
+        this.products = data
+      }
+    })
 
-  products = this.ProductService.products();
+  }
+  // products = this.ProductService.products();
   filteredProducts = [...this.products];
   searchInput = '';
   search() {
@@ -37,9 +45,9 @@ export class SearchComponent {
     this.filteredProducts = [...startsWithMatches, ...includesMatches];
   }
 
-  routing(product: number) {
-    // console.log(product);
-    this.router.navigate(['/products', product]);
-    this.searchInput = '';
-  }
+  // routing(product: number) {
+  //   // console.log(product);
+  //   this.router.navigate(['/products', product]);
+  //   this.searchInput = '';
+  // }
 }
