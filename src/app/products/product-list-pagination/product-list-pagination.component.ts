@@ -21,20 +21,14 @@ export class ProductListPaginationComponent implements OnInit {
   }
 
   loadProducts(): void {
-    this.productService.getProducts().subscribe({
-      next: (data) => {
-        this.products = data;
-        this.loading = false;
-      },
-      error: (err) => console.error(err),
-    });
+    this.productService
+      .getAllProducts()
+      .subscribe({
+        next: (data) => {
+          this.products = data;
+          this.loading = false;
+        },
+        error: (err) => console.error(err),
+      });
   }
-
-  // deleteProduct(id: number): void {
-  //   if (confirm('Are you sure you want to delete this product?')) {
-  //     this.productService.delete(id).subscribe(() => {
-  //       this.products = this.products.filter((p) => p.id !== id);
-  //     });
-  //   }
-  // }
 }

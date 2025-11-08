@@ -23,7 +23,6 @@ import { FavoriteService } from '../../services/favorite.service';
   selector: 'app-product-details',
   imports: [NgFor, NgIf, RouterLink],
   templateUrl: './product-details.component.html',
-
 })
 export class ProductDetailsComponent implements OnInit {
   product?: Product;
@@ -35,7 +34,7 @@ export class ProductDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.productService.getProduct(id).subscribe({
+    this.productService.getProductById(id).subscribe({
       next: (data) => (this.product = data),
       error: (err) => console.error(err),
     });

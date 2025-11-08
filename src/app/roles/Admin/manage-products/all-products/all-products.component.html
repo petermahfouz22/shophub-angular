@@ -1,1 +1,191 @@
-<p>all-products works!</p>
+<div class="container mx-auto px-4 py-8">
+  <!-- Header -->
+  <div class="mb-8 flex justify-between items-center">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900">Products</h1>
+      <p class="text-gray-600 mt-2">Manage and filter your products</p>
+    </div>
+    <button routerLink="/admin/products/create" class="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700">
+      + Add Product
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="bg-white p-5 rounded-lg shadow-sm mb-6 grid md:grid-cols-3 gap-4">
+    <!-- Search -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+      <div class="flex">
+        <input type="text" [(ngModel)]="searchTerm" (input)="onSearch()" placeholder="ابحث عن منتج..."
+          class="border rounded p-2 w-full" />
+      </div>
+    </div>
+
+    <!-- Status Filter -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+      <select [(ngModel)]="statusFilter" (change)="onFilterChange()"
+        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <option value="">All</option>
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+      </select>
+    </div>
+
+    <!-- Count -->
+    <div class="flex items-end">
+      <p class="text-gray-600">Total: {{ totalItems }} items</p>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="errorMessage" class="bg-red-100 border border-red-300 text-red-700 p-3 rounded mb-4">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="flex justify-center items-center py-10">
+    <div class="animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+  </div>
+
+  <!-- Table -->
+  <div *ngIf="!isLoading" class="bg-white shadow rounded-lg overflow-hidden">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">
+            Product
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">
+            Category
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">
+            Price
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">
+            Stock
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">
+            Status
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">
+            Actions
+          </th>
+        </tr>
+      </thead>
+
+      <tbody class="bg-white divide-y divide-gray-200">
+        @for(product of products; track product.id){
+        <tr class="hover:bg-gray-50">
+          <!-- Product -->
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="flex items-center">
+              <div class="h-10 w-10 bg-gray-100 flex items-center justify-center rounded-md overflow-hidden">
+                <img *ngIf="product.image_url" [src]="product.image_url" alt="Product Image"
+                  class="h-full w-full object-cover" />
+                <span *ngIf="!product.image_url" class="text-gray-400 text-xs">No Img</span>
+              </div>
+              <div class="ml-4">
+                <div class="text-sm font-medium text-gray-900">
+                  {{ product.name }}
+                </div>
+                <div class="text-sm text-gray-500">{{ product.sku }}</div>
+              </div>
+            </div>
+          </td>
+
+          <!-- Category -->
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="text-sm text-gray-900">
+              {{ product.category?.name || '—' }}
+            </div>
+            <div class="text-xs text-gray-500">
+              {{ product.brand?.name || '' }}
+            </div>
+          </td>
+
+          <!-- Price -->
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="text-sm text-gray-900">${{ product.price }}</div>
+            <div *ngIf="product.discount_price" class="text-xs text-red-500 line-through">
+              ${{ product.discount_price }}
+            </div>
+          </td>
+
+          <!-- Stock -->
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span [ngClass]="{
+                  'text-green-600': product.stock > 10,
+                  'text-red-600': product.stock <= 10
+                }" class="text-sm font-medium">
+              {{ product.stock }}
+            </span>
+          </td>
+
+          <!-- Status -->
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span [ngClass]="getStatusBadgeClass(product.status)"
+              class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
+              {{ product.status }}
+            </span>
+          </td>
+
+          <!-- Actions -->
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+            <div class="flex space-x-2">
+              <!-- View -->
+              <button  [routerLink]="['/admin/products', product.id]" class="text-blue-600 hover:text-blue-900">
+                View
+              </button>
+
+              <!-- Edit -->
+              <button [routerLink]="['/admin/products/edit', product.id]" class="text-green-600 hover:text-green-900">
+                Edit
+              </button>
+
+              <!-- Toggle Status -->
+              <button (click)="onToggleStatus(product)" [class]="product.status === 'active' 
+          ? 'text-orange-600 hover:text-orange-900' 
+          : 'text-green-600 hover:text-green-900'"
+                [title]="product.status === 'active' ? 'Deactivate Product' : 'Activate Product'">
+                {{ product.status === 'active' ? 'Deactivate' : 'Activate' }}
+              </button>
+
+              <!-- Delete -->
+              <button (click)="onDelete(product)" class="text-red-600 hover:text-red-900">
+                Delete
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        }
+      </tbody>
+    </table>
+
+    <!-- Empty state -->
+    <div *ngIf="products.length === 0" class="py-10 text-center text-gray-500">
+      No products found
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="!isLoading && totalPages > 1" class="mt-6 flex justify-center space-x-2">
+    <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1"
+      class="px-3 py-1 border rounded text-gray-600 disabled:opacity-50">
+      Prev
+    </button>
+
+    <button *ngFor="let page of getPages()" (click)="onPageChange(page)" [ngClass]="{
+        'bg-blue-600 text-white': page === currentPage,
+        'border border-gray-300 text-gray-600': page !== currentPage
+      }" class="px-3 py-1 rounded">
+      {{ page }}
+    </button>
+
+    <button (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages"
+      class="px-3 py-1 border rounded text-gray-600 disabled:opacity-50">
+      Next
+    </button>
+  </div>
+</div>

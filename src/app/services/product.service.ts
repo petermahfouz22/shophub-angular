@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Category, Product,ProductFormData} from '../interfaces/product';
+import { Category, Product, ProductFormData } from '../interfaces/product';
 import { Url } from '../urls.environment';
-
+import { catchError } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
@@ -12,31 +12,87 @@ export class ProductService {
 
   constructor(private http: HttpClient) {}
 
-  getProducts(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/products`);
+  // ==============================
+  // 🟢 Public (User) Endpoints
+  // ==============================
+
+  /** يحصل على كل المنتجات المتاحة للمستخدم */
+  getAllProducts(): Observable<Product[]> {
+    return this.http.get<Product[]>(`${this.apiUrl}/products`);
   }
 
-  getProduct(id: number): Observable<Product> {
+  /** يحصل على تفاصيل منتج واحد */
+  getProductById(id: number): Observable<Product> {
     return this.http.get<Product>(`${this.apiUrl}/products/${id}`);
   }
-  getCategories():Observable<Category>{
-    return this.http.get<Category>(`${this.apiUrl}/categories`)
 
+  /** يحصل على كل التصنيفات */
+  getCategories(): Observable<Category[]> {
+    return this.http.get<Category[]>(`${this.apiUrl}/categories`);
   }
 
-  createProduct(product: Product): Observable<{ message: string; product: Product }> {
-    return this.http.post<{ message: string; product: Product }>(`${this.apiUrl}/products/new-product`, product);
+  // ==============================
+  // 🔵 Admin Endpoints
+  // ==============================
+
+  /** يحصل على كل المنتجات (بما في ذلك inactive أو المحذوفة مثلاً) */
+  adminGetProducts(): Observable<Product[]> {
+    return this.http.get<Product[]>(`${this.apiUrl}/admin/products`);
+  }
+  adminGetProductById(id: number): Observable<Product> {
+    return this.http.get<Product>(`${this.apiUrl}/admin/products/${id}`);
   }
 
-  updateProduct(id: number, product: Product): Observable<{ message: string; product: Product }> {
-    return this.http.put<{ message: string; product: Product }>(`${this.apiUrl}/products/${id}`, product);
+  /** إنشاء منتج جديد */
+  adminCreateProduct(
+    product: Product
+  ): Observable<{ message: string; product: Product }> {
+    return this.http.post<{ message: string; product: Product }>(
+      `${this.apiUrl}/admin/products/create`,
+      product
+    );
   }
 
-  deleteProduct(id: number): Observable<{ message: string }> {
-    return this.http.delete<{ message: string }>(`${this.apiUrl}/products/${id}`);
+  adminUpdateProduct(
+    id: number,
+    product: Product
+  ): Observable<{ message: string; product: Product }> {
+    return this.http
+      .put<{ message: string; product: Product }>(
+        `${this.apiUrl}/admin/products/edit/${id}`,
+        product
+      )
+      .pipe(
+        catchError((error) => {
+          console.log('🔴 Full error response:', error);
+          console.log('🔴 Validation errors:', error.error.errors);
+          console.log('🔴 Error message:', error.error.message);
+          throw error;
+        })
+      );
   }
 
-  getFormData(): Observable<ProductFormData> {
-    return this.http.get<ProductFormData>(`${this.apiUrl}/products/form/data`);
+  /** حذف منتج */
+  adminDeleteProduct(id: number): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(
+      `${this.apiUrl}/admin/products/${id}`
+    );
+  }
+
+  /** تحديث حالة منتج (active / inactive) */
+  adminToggleProductStatus(
+    id: number
+  ): Observable<{ message: string; product: Product }> {
+    return this.http.patch<{ message: string; product: Product }>(
+      `${this.apiUrl}/admin/products/${id}/status`,
+      {}
+    );
+  }
+
+  /** جلب بيانات الفورم (categories, brands, etc...) */
+  adminGetFormData(): Observable<ProductFormData> {
+    return this.http.get<ProductFormData>(
+      `${this.apiUrl}/admin/products/form/data`
+    );
   }
 }

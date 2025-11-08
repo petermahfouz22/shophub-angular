@@ -12,10 +12,12 @@ export class FeaturedProductsComponent implements OnInit {
   products: Product[] = [];
   private productService = inject(ProductService);
   ngOnInit(): void {
-    this.productService.getProducts().subscribe({
-      next: (data) => {
-        this.products = data.slice(0, 4);
-      },
-    });
+    this.productService
+      .getAllProducts()
+      .subscribe({
+        next: (data) => {
+          this.products = data.slice(0, 4);
+        },
+      });
   }
 }

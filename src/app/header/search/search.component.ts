@@ -9,17 +9,16 @@ import { Product } from '../../interfaces/product';
   imports: [FormsModule],
   templateUrl: './search.component.html',
 })
-export class SearchComponent implements   OnInit{
-  products:Product[]=[]
+export class SearchComponent implements OnInit {
+  products: Product[] = [];
   private ProductService = inject(ProductService);
   constructor(private router: Router) {}
-  ngOnInit():void{
-    this.ProductService.getProducts().subscribe({
-      next:(data)=>{
-        this.products = data
-      }
-    })
-
+  ngOnInit(): void {
+    this.ProductService.getAllProducts().subscribe({
+      next: (data) => {
+        this.products = data;
+      },
+    });
   }
   // products = this.ProductService.products();
   filteredProducts = [...this.products];

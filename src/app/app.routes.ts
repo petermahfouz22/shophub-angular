@@ -29,6 +29,9 @@ import { GoogleCallbackComponent } from './auth/google-callback/google-callback.
 import { ForgotPasswordComponent } from './auth/forget-password/forget-password.component';
 import { ResetPasswordComponent } from './auth/forget-password/reset-password/reset-password.component';
 import { NewProductComponent } from './roles/Admin/manage-products/add-product/new-product.component';
+import { AllProductsComponent } from './roles/Admin/manage-products/all-products/all-products.component';
+import { EditProductComponent } from './roles/Admin/manage-products/edit-product/edit-product.component';
+import { ShowProductComponent } from './roles/Admin/manage-products/show-product/show-product.component';
 export const routes: Routes = [
   //?default-Route----------------------------
   {
@@ -71,7 +74,15 @@ export const routes: Routes = [
     },
     // resolve: {productData:resolvePoductData},
   },
-  { path: 'new-product', component: NewProductComponent },
+  {
+    path: 'admin',
+    children: [
+      { path: 'products', component: AllProductsComponent },
+      { path: 'products/create', component: NewProductComponent },
+      { path: 'products/edit/:id', component: EditProductComponent },
+      { path: 'products/:id', component: ShowProductComponent },
+    ],
+  },
   //?------------------------------------------
 
   //?userSection-------------------------------

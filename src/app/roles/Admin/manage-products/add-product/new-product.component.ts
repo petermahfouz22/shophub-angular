@@ -49,7 +49,7 @@ export class NewProductComponent {
   }
 
   private loadFormData(): void {
-    this.productService.getFormData().subscribe({
+    this.productService.adminGetFormData().subscribe({
       next: (data) => {
         console.log(data);
         this.categories = data.categories;
@@ -82,7 +82,7 @@ export class NewProductComponent {
         stock: parseInt(formValue.stock, 10),
       };
 
-      this.productService.createProduct(productData).subscribe({
+      this.productService.adminCreateProduct(productData).subscribe({
         next: (response) => {
           this.isLoading = false;
           this.router.navigate(['/products']);
