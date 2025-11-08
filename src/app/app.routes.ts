@@ -29,7 +29,6 @@ import { NewProductComponent } from './roles/Admin/manage-products/add-product/n
 import { AllProductsComponent } from './roles/Admin/manage-products/all-products/all-products.component';
 import { EditProductComponent } from './roles/Admin/manage-products/edit-product/edit-product.component';
 import { ShowProductComponent } from './roles/Admin/manage-products/show-product/show-product.component';
-import { CreateComponent } from './roles/Admin/manage-users/create/create.component';
 import { EditComponent } from './roles/Admin/manage-users/edit/edit.component';
 import { ShowComponent } from './roles/Admin/manage-users/show/show.component';
 export const routes: Routes = [
@@ -93,7 +92,6 @@ export const routes: Routes = [
         path: 'users',
         children: [
           { path: '', component: IndexComponent },
-          { path: 'create', component: CreateComponent },
           { path: 'edit/:id', component: EditComponent },
           { path: ':id', component: ShowComponent },
         ],
