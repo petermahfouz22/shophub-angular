@@ -17,11 +17,8 @@ import { TermsConditionsComponent } from './informations/terms-condtions/terms-c
 import { PrivacyPolicyComponent } from './informations/privacy-policy/privacy-policy.component';
 import { PaymentComponent } from './payment/payment.component';
 import { NotFoundComponent } from './not-found/not-found.component';
-import { UsersComponent } from './roles/Admin/manage-users/users/users.component';
-import {
-  UserDetailsComponent,
-  resolveUserData,
-} from './roles/Admin/manage-users/users/user-details/user-details.component';
+import { IndexComponent } from './roles/Admin/manage-users/index/index.component';
+
 import { ProfileComponent } from './profile/profile.component';
 import { EditProfileComponent } from './roles/User/edit-profile/edit-profile.component';
 import { SettingComponent } from './setting/setting.component';
@@ -32,6 +29,9 @@ import { NewProductComponent } from './roles/Admin/manage-products/add-product/n
 import { AllProductsComponent } from './roles/Admin/manage-products/all-products/all-products.component';
 import { EditProductComponent } from './roles/Admin/manage-products/edit-product/edit-product.component';
 import { ShowProductComponent } from './roles/Admin/manage-products/show-product/show-product.component';
+import { CreateComponent } from './roles/Admin/manage-users/create/create.component';
+import { EditComponent } from './roles/Admin/manage-users/edit/edit.component';
+import { ShowComponent } from './roles/Admin/manage-users/show/show.component';
 export const routes: Routes = [
   //?default-Route----------------------------
   {
@@ -74,24 +74,35 @@ export const routes: Routes = [
     },
     // resolve: {productData:resolvePoductData},
   },
+  //?--------------------Admin--------------------
   {
     path: 'admin',
     children: [
-      { path: 'products', component: AllProductsComponent },
-      { path: 'products/create', component: NewProductComponent },
-      { path: 'products/edit/:id', component: EditProductComponent },
-      { path: 'products/:id', component: ShowProductComponent },
+      {
+        //?--------------------manage-products--------------------
+        path: 'products',
+        children: [
+          { path: '', component: AllProductsComponent },
+          { path: 'create', component: NewProductComponent },
+          { path: 'edit/:id', component: EditProductComponent },
+          { path: ':id', component: ShowProductComponent },
+        ],
+      },
+      {
+        //?--------------------manage-users--------------------
+        path: 'users',
+        children: [
+          { path: '', component: IndexComponent },
+          { path: 'create', component: CreateComponent },
+          { path: 'edit/:id', component: EditComponent },
+          { path: ':id', component: ShowComponent },
+        ],
+      },
     ],
   },
   //?------------------------------------------
 
   //?userSection-------------------------------
-  { path: 'users', component: UsersComponent },
-  {
-    path: 'users/:id',
-    component: UserDetailsComponent,
-    resolve: { userData: resolveUserData },
-  },
   {
     path: 'profile',
     component: ProfileComponent,
