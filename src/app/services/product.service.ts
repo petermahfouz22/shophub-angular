@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Category, Product, ProductFormData } from '../interfaces/product';
 import { Url } from '../urls.environment';
@@ -9,7 +9,7 @@ import { catchError } from 'rxjs';
 })
 export class ProductService {
   private apiUrl = Url.apiUrl;
-
+  private adminUrl = Url.productsUrl;
   constructor(private http: HttpClient) {}
 
   // ==============================
@@ -26,10 +26,10 @@ export class ProductService {
     return this.http.get<Product>(`${this.apiUrl}/products/${id}`);
   }
 
-  /** يحصل على كل التصنيفات */
-  getCategories(): Observable<Category[]> {
-    return this.http.get<Category[]>(`${this.apiUrl}/categories`);
-  }
+  // /** يحصل على كل التصنيفات */
+  // getCategories(): Observable<Category[]> {
+  //   return this.http.get<Category[]>(`${this.apiUrl}/categories`);
+  // }
 
   // ==============================
   // 🔵 Admin Endpoints
@@ -37,10 +37,10 @@ export class ProductService {
 
   /** يحصل على كل المنتجات (بما في ذلك inactive أو المحذوفة مثلاً) */
   adminGetProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.apiUrl}/admin/products`);
+    return this.http.get<Product[]>(this.adminUrl);
   }
   adminGetProductById(id: number): Observable<Product> {
-    return this.http.get<Product>(`${this.apiUrl}/admin/products/${id}`);
+    return this.http.get<Product>(`${this.adminUrl}/${id}`);
   }
 
   /** إنشاء منتج جديد */
@@ -48,7 +48,7 @@ export class ProductService {
     product: Product
   ): Observable<{ message: string; product: Product }> {
     return this.http.post<{ message: string; product: Product }>(
-      `${this.apiUrl}/admin/products/create`,
+      `${this.adminUrl}/create`,
       product
     );
   }
@@ -59,7 +59,7 @@ export class ProductService {
   ): Observable<{ message: string; product: Product }> {
     return this.http
       .put<{ message: string; product: Product }>(
-        `${this.apiUrl}/admin/products/edit/${id}`,
+        `${this.adminUrl}/edit/${id}`,
         product
       )
       .pipe(
@@ -75,7 +75,7 @@ export class ProductService {
   /** حذف منتج */
   adminDeleteProduct(id: number): Observable<{ message: string }> {
     return this.http.delete<{ message: string }>(
-      `${this.apiUrl}/admin/products/${id}`
+      `${this.adminUrl}/${id}`
     );
   }
 
@@ -84,7 +84,7 @@ export class ProductService {
     id: number
   ): Observable<{ message: string; product: Product }> {
     return this.http.patch<{ message: string; product: Product }>(
-      `${this.apiUrl}/admin/products/${id}/status`,
+      `${this.adminUrl}/${id}/status`,
       {}
     );
   }
@@ -92,7 +92,21 @@ export class ProductService {
   /** جلب بيانات الفورم (categories, brands, etc...) */
   adminGetFormData(): Observable<ProductFormData> {
     return this.http.get<ProductFormData>(
-      `${this.apiUrl}/admin/products/form/data`
+      `${this.adminUrl}/form/data`
     );
   }
+
+  // // في product.service.ts
+  // getProductsByCategory(
+  //   categoryId: number,
+  //   page: number = 1,
+  //   perPage: number = 4
+  // ): Observable<ProductResponse> {
+  //   let params = new HttpParams()
+  //     .set('page', page.toString())
+  //     .set('per_page', perPage.toString())
+  //     .set('category_id', categoryId.toString());
+
+  //   return this.http.get<ProductResponse>(this.apiUrl, { params });
+  // }
 }

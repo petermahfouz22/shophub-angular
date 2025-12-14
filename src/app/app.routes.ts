@@ -20,7 +20,6 @@ import { NotFoundComponent } from './not-found/not-found.component';
 import { IndexComponent } from './roles/Admin/manage-users/index/index.component';
 
 import { ProfileComponent } from './profile/profile.component';
-import { EditProfileComponent } from './roles/User/edit-profile/edit-profile.component';
 import { SettingComponent } from './setting/setting.component';
 import { GoogleCallbackComponent } from './auth/google-callback/google-callback.component';
 import { ForgotPasswordComponent } from './auth/forget-password/forget-password.component';
@@ -31,6 +30,13 @@ import { EditProductComponent } from './roles/Admin/manage-products/edit-product
 import { ShowProductComponent } from './roles/Admin/manage-products/show-product/show-product.component';
 import { EditComponent } from './roles/Admin/manage-users/edit/edit.component';
 import { ShowComponent } from './roles/Admin/manage-users/show/show.component';
+import { AllCategoriesComponent } from './roles/Admin/manage-categories/all-categories/all-categories.component';
+// import { ShowCategoryComponent } from './roles/Admin/manage-categories/show/show-category.component';
+import { NewCategoryComponent } from './roles/Admin/manage-categories/new-category/new-category.component';
+import { EditCategoryComponent } from './roles/Admin/manage-categories/edit-category/edit-category.component';
+import { AllBrandsComponent } from './roles/Admin/manage-brands/index/all-brands.component';
+import { NewBrandComponent } from './roles/Admin/manage-brands/create/new-brand.component';
+import { EditBrandComponent } from './roles/Admin/manage-brands/edit/edit-brand.component';
 export const routes: Routes = [
   //?default-Route----------------------------
   {
@@ -87,6 +93,32 @@ export const routes: Routes = [
           { path: ':id', component: ShowProductComponent },
         ],
       },
+      // ... other routes
+      {
+        path: 'categories',
+        children: [
+          { path: '', component: AllCategoriesComponent },
+          { path: 'create', component: NewCategoryComponent },
+          { path: 'edit/:id', component: EditCategoryComponent },
+          // {path:':id',component:ShowCategoryComponent}
+        ],
+      },
+      {
+        path: 'brands',
+        children: [
+          { path: '', component: AllBrandsComponent },
+          { path: 'create', component: NewBrandComponent },
+          { path: 'edit/:id', component: EditBrandComponent },
+        ],
+      },
+      //       {
+      //   path: 'brands',
+      //   children: [
+      //     { path: '', component: BrandListComponent },
+      //     { path: 'create', component: BrandFormComponent },
+      //     { path: 'edit/:id', component: BrandFormComponent }
+      //   ]
+      // }
       {
         //?--------------------manage-users--------------------
         path: 'users',
@@ -104,10 +136,6 @@ export const routes: Routes = [
   {
     path: 'profile',
     component: ProfileComponent,
-  },
-  {
-    path: 'profile/edit/:id',
-    component: EditProfileComponent,
   },
   {
     path: 'setting',
@@ -131,14 +159,10 @@ export const routes: Routes = [
   {
     path: 'terms',
     component: TermsConditionsComponent,
-    data: { wantSearch: false },
   },
   {
     path: 'privacy',
     component: PrivacyPolicyComponent,
-    data: {
-      wantSearch: false,
-    },
   },
   //?-----------------------------------------
 

@@ -7,12 +7,12 @@ import {
   UsersResponse,
   UserResponse,
 } from '../interfaces/user';
-import { Url } from '../urls.environment';
+import { Url, baseAdminUrl} from '../urls.environment';
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  private baseUrl = 'http://localhost:8000/api/admin';
+  private baseUrl = baseAdminUrl;
 
   constructor(private http: HttpClient) {}
 
