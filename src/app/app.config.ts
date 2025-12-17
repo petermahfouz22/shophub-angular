@@ -4,7 +4,7 @@ import {
   withComponentInputBinding,
   withRouterConfig,
 } from '@angular/router';
-import { routes } from './app.routes';
+import { routes } from './routes/app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './auth/auth.interceptor';
 

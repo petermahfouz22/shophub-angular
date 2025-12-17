@@ -5,9 +5,10 @@ import { Category } from '../../../../interfaces/category';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { DatePipe, CommonModule } from '@angular/common';
+import { LoaderComponent } from '../../../../shared/loader/loader.component';
 @Component({
   selector: 'app-all-categories',
-  imports: [RouterLink, FormsModule, CommonModule],
+  imports: [RouterLink, FormsModule, CommonModule, LoaderComponent],
   templateUrl: './all-categories.component.html',
   styles: ``,
 })

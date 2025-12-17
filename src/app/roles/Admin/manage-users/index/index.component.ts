@@ -5,15 +5,16 @@ import { finalize } from 'rxjs/operators';
 import { FormsModule } from '@angular/forms';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
+import { LoaderComponent } from '../../../../shared/loader/loader.component';
 
 @Component({
   selector: 'app-index',
-  imports: [FormsModule, DatePipe, CommonModule],
+  imports: [FormsModule, DatePipe, CommonModule,LoaderComponent],
   templateUrl: './index.component.html',
 })
 export class IndexComponent implements OnInit {
   users: User[] = [];
-  loading = false;
+  isLoading = false;
 
   // Only delete modal remains
   showDeleteModal = false;
@@ -27,16 +28,16 @@ export class IndexComponent implements OnInit {
 
   // Index - Load all users
   loadUsers(): void {
-    this.loading = true;
+    this.isLoading = true;
     this.userService
       .getUsers()
-      .pipe(finalize(() => (this.loading = false)))
+      .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
         next: (response) => {
           this.users = response.data;
         },
         error: (error) => {
-          console.error('Error loading users:', error);
+          console.error('Error isLoading users:', error);
         },
       });
   }
@@ -61,12 +62,12 @@ export class IndexComponent implements OnInit {
   deleteUser(): void {
     if (!this.selectedUser) return;
 
-    this.loading = true;
+    this.isLoading = true;
     this.userService
       .deleteUser(this.selectedUser.id)
       .pipe(
         finalize(() => {
-          this.loading = false;
+          this.isLoading = false;
           this.showDeleteModal = false;
         })
       )

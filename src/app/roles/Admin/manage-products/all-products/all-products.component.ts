@@ -4,9 +4,10 @@ import { Product } from '../../../../interfaces/product';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Route, Router, RouterLink } from '@angular/router';
+import { LoaderComponent } from '../../../../shared/loader/loader.component';
 @Component({
   selector: 'app-manage-products',
-  imports: [ReactiveFormsModule, CommonModule, FormsModule, RouterLink],
+  imports: [ReactiveFormsModule, CommonModule, FormsModule, RouterLink,LoaderComponent],
   templateUrl: './all-products.component.html',
 })
 export class AllProductsComponent implements OnInit {

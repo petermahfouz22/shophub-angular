@@ -1,9 +1,14 @@
 <div class="container mx-auto px-4 py-8">
   <h2 class="text-3xl font-bold mb-8">Featured Products</h2>
-
+  @if(isLoading){
+  <app-loader />
+  }
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
     @for(product of products ; track product.id){
+    @if(product.status === 'active'){
     <app-product [product]="product" />
+
+    }
     }
   </div>
 </div>

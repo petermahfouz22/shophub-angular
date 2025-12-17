@@ -5,17 +5,18 @@ import {Brand, PaginatedBrands, BrandResponse} from '../../../../interfaces/bran
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { LoaderComponent } from '../../../../shared/loader/loader.component';
 
 @Component({
   selector: 'app-all-brands',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule,LoaderComponent],
   templateUrl: './all-brands.component.html'
 })
 export class AllBrandsComponent implements OnInit {
   brands: Brand[] = [];
   paginatedBrands!: PaginatedBrands;
-  loading = false;
+  isLoading = false;
   searchTerm = '';
   statusFilter = '';
   
@@ -33,7 +34,7 @@ export class AllBrandsComponent implements OnInit {
   }
 
   loadBrands(): void {
-    this.loading = true;
+    this.isLoading = true;
     
     const params: any = {
       page: this.currentPage,
@@ -55,11 +56,11 @@ export class AllBrandsComponent implements OnInit {
           this.brands = response.data.data;
           this.totalItems = response.data.total;
         }
-        this.loading = false;
+        this.isLoading = false;
       },
       error: (error) => {
-        console.error('Error loading brands:', error);
-        this.loading = false;
+        console.error('Error isLoading brands:', error);
+        this.isLoading = false;
       }
     });
   }

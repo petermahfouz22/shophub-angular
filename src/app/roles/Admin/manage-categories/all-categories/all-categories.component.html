@@ -40,7 +40,7 @@
         <option value="">All Categories</option>
         <option value="null">Main Categories Only</option>
         @for(category of parentCategories; track category.id){
-          <option [value]="category.id">{{ category.name }}</option>
+        <option [value]="category.id">{{ category.name }}</option>
         }
       </select>
     </div>
@@ -56,10 +56,9 @@
     {{ errorMessage }}
   </div>
 
-  <!-- Loading Spinner -->
-  <div *ngIf="isLoading" class="flex justify-center items-center py-10">
-    <div class="animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full"></div>
-  </div>
+  @if(isLoading){
+  <app-loader />
+  }
 
   <!-- Table -->
   <div *ngIf="!isLoading" class="bg-white shadow rounded-lg overflow-hidden">
@@ -119,7 +118,8 @@
 
           <!-- Subcategories Count -->
           <td class="px-6 py-4 whitespace-nowrap">
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+            <span
+              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
               {{ category.children?.length || 0 }} subcategories
             </span>
           </td>

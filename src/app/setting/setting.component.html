@@ -1,1 +1,84 @@
-<p>setting works!</p>
+<div class="min-h-screen bg-gray-100 dark:bg-gray-900 py-10 px-4">
+  <div class="max-w-2xl mx-auto">
+
+    <!-- Card -->
+    <div class="bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-6">
+
+      <!-- Header -->
+      <div class="mb-6">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
+          Application Settings
+        </h2>
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+          Customize your application preferences
+        </p>
+      </div>
+
+      <!-- Language -->
+      <div class="mb-5">
+        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+          Language
+        </label>
+        <select
+          [(ngModel)]="lang"
+          class="w-full rounded-xl border px-4 py-2
+                 bg-gray-50 dark:bg-gray-700
+                 border-gray-300 dark:border-gray-600
+                 text-gray-900 dark:text-white
+                 focus:ring-2 focus:ring-blue-500">
+          <option value="en">English</option>
+          <option value="ar">Arabic</option>
+        </select>
+      </div>
+
+      <!-- Theme -->
+      <div class="mb-8">
+        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+          Theme
+        </label>
+        <select
+          [(ngModel)]="theme"
+          class="w-full rounded-xl border px-4 py-2
+                 bg-gray-50 dark:bg-gray-700
+                 border-gray-300 dark:border-gray-600
+                 text-gray-900 dark:text-white
+                 focus:ring-2 focus:ring-blue-500">
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+          <option value="system">System</option>
+        </select>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex items-center gap-4">
+        <button
+          (click)="save()"
+          [disabled]="isSaving"
+          class="flex items-center justify-center gap-2
+                 rounded-xl px-6 py-2 font-medium text-white
+                 bg-blue-600 hover:bg-blue-700
+                 disabled:opacity-50 disabled:cursor-not-allowed">
+
+          <!-- Spinner -->
+          <svg *ngIf="isSaving"
+               class="animate-spin h-5 w-5 text-white"
+               viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10"
+                    stroke="currentColor" stroke-width="4" fill="none"/>
+            <path class="opacity-75" fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8z"/>
+          </svg>
+
+          <span>{{ isSaving ? 'Saving...' : 'Save Changes' }}</span>
+        </button>
+
+        <!-- Success -->
+        <span *ngIf="saved"
+              class="text-sm text-green-600 dark:text-green-400">
+          ✔ Settings saved successfully
+        </span>
+      </div>
+
+    </div>
+  </div>
+</div>
