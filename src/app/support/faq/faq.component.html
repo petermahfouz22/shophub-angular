@@ -22,13 +22,15 @@
                         </svg>
                         <input type="text" [(ngModel)]="searchQuery" placeholder="Search for questions..."
                             class="w-full pl-12 pr-12 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300">
-                        <button *ngIf="searchQuery" (click)="clearSearch()"
-                            class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors duration-300">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
+                        @if(searchQuery()){
+                            <button (click)="clearSearch()"
+                                class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors duration-300">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        }
                     </div>
                     <div class="flex gap-2">
                         <button (click)="expandAll()"
@@ -51,7 +53,8 @@
                 <div class="bg-white rounded-2xl shadow-lg p-6 sticky top-8">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">Categories</h3>
                     <div class="space-y-2">
-                        <button *ngFor="let category of categories()" (click)="selectCategory(category.id)"
+                        @for (category of categories(); track category.id) {
+                        <button (click)="selectCategory(category.id)"
                             class="w-full flex items-center justify-between p-3 rounded-xl transition-all duration-300 text-left"
                             [class.bg-blue-50]="selectedCategory() === category.id"
                             [class.text-blue-700]="selectedCategory() === category.id"
@@ -64,6 +67,7 @@
                                 {{ category.count }}
                             </span>
                         </button>
+                        }
                     </div>
                 </div>
             </div>
@@ -72,7 +76,8 @@
             <div class="lg:col-span-3">
 
                 <!-- No Results Message -->
-                <div *ngIf="noResultsFound()" class="text-center py-12">
+                @if (noResultsFound()) {
+                <div class="text-center py-12">
                     <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -85,10 +90,13 @@
                         Clear Search
                     </button>
                 </div>
+                }
 
                 <!-- FAQ List -->
-                <div *ngIf="!noResultsFound()" class="space-y-4">
-                    <div *ngFor="let item of filteredFaqItems()"
+                @if (!noResultsFound()) {
+                <div class="space-y-4">
+                    @for (item of filteredFaqItems(); track item.id) {
+                    <div
                         class="bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
 
                         <!-- Question -->
@@ -116,7 +124,8 @@
                         </button>
 
                         <!-- Answer -->
-                        <div *ngIf="item.isExpanded" class="px-6 pb-6 border-t border-gray-100">
+                        @if (item.isExpanded) {
+                        <div class="px-6 pb-6 border-t border-gray-100">
                             <div class="pt-4 text-gray-600 leading-relaxed">
                                 {{ item.answer }}
                             </div>
@@ -134,12 +143,15 @@
                                 </button>
                             </div>
                         </div>
+                        }
                     </div>
+                    }
                 </div>
+                }
 
                 <!-- Still Need Help Section -->
-                <div *ngIf="!noResultsFound()"
-                    class="mt-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl shadow-lg p-8 text-white">
+                @if (!noResultsFound()) {
+                <div class="mt-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl shadow-lg p-8 text-white">
                     <div class="text-center">
                         <h3 class="text-2xl font-bold mb-4">Still need help?</h3>
                         <p class="text-blue-100 mb-6 max-w-2xl mx-auto">
@@ -158,6 +170,7 @@
                         </div>
                     </div>
                 </div>
+                }
 
             </div>
         </div>

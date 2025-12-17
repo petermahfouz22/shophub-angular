@@ -28,15 +28,16 @@
         <div class="bg-white rounded-2xl shadow-lg p-6 sticky top-8">
           <h3 class="text-lg font-semibold text-gray-900 mb-4">Table of Contents</h3>
           <nav class="space-y-2 max-h-[calc(100vh-200px)] overflow-y-auto">
-            <button
-              *ngFor="let section of policySections"
-              (click)="scrollToSection(section.id)"
-              class="w-full text-left p-3 rounded-xl transition-all duration-300 hover:bg-blue-50 hover:text-blue-700"
-              [class.bg-blue-50]="activeSection() === section.id"
-              [class.text-blue-700]="activeSection() === section.id"
-              [class.text-gray-700]="activeSection() !== section.id">
-              <span class="font-medium text-sm">{{ section.title }}</span>
-            </button>
+            @for (section of policySections; track section.id) {
+              <button
+                (click)="scrollToSection(section.id)"
+                class="w-full text-left p-3 rounded-xl transition-all duration-300 hover:bg-blue-50 hover:text-blue-700"
+                [class.bg-blue-50]="activeSection() === section.id"
+                [class.text-blue-700]="activeSection() === section.id"
+                [class.text-gray-700]="activeSection() !== section.id">
+                <span class="font-medium text-sm">{{ section.title }}</span>
+              </button>
+            }
           </nav>
 
           <!-- Quick Actions -->
@@ -98,9 +99,9 @@
               <section id="introduction" class="scroll-mt-24 mb-12">
                 <h2 class="text-2xl font-bold text-gray-900 mb-6 pb-3 border-b border-gray-200">1. Introduction</h2>
                 <div class="space-y-4 text-gray-700 leading-relaxed">
-                  <p *ngFor="let paragraph of policySections[0].content" class="text-gray-700">
-                    {{ paragraph }}
-                  </p>
+                  @for (paragraph of policySections[0].content; track paragraph) {
+                    <p class="text-gray-700">{{ paragraph }}</p>
+                  }
                 </div>
               </section>
 
@@ -108,19 +109,27 @@
               <section id="information-collection" class="scroll-mt-24 mb-12">
                 <h2 class="text-2xl font-bold text-gray-900 mb-6 pb-3 border-b border-gray-200">2. Information We Collect</h2>
                 <div class="space-y-4 text-gray-700 leading-relaxed">
-                  <p *ngFor="let paragraph of policySections[1].content" class="text-gray-700">
-                    {{ paragraph }}
-                  </p>
+                  @for (paragraph of policySections[1].content; track paragraph) {
+                    <p class="text-gray-700">{{ paragraph }}</p>
+                  }
                   
-                  <div *ngFor="let subsection of policySections[1].subsections" class="ml-4 mt-6">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-3">{{ subsection.title }}</h3>
-                    <ul class="space-y-2 text-gray-700">
-                      <li *ngFor="let item of subsection.content" class="flex items-start gap-2">
-                        <span *ngIf="item.startsWith('•')" class="flex-shrink-0 mt-1">•</span>
-                        <span>{{ item.startsWith('•') ? item.substring(2) : item }}</span>
-                      </li>
-                    </ul>
-                  </div>
+                  @for (subsection of policySections[1].subsections; track subsection.title) {
+                    <div class="ml-4 mt-6">
+                      <h3 class="text-lg font-semibold text-gray-800 mb-3">{{ subsection.title }}</h3>
+                      <ul class="space-y-2 text-gray-700">
+                        @for (item of subsection.content; track item) {
+                          <li class="flex items-start gap-2">
+                            @if (item.startsWith('•')) {
+                              <span class="flex-shrink-0 mt-1">•</span>
+                              <span>{{ item.substring(2) }}</span>
+                            } @else {
+                              <span>{{ item }}</span>
+                            }
+                          </li>
+                        }
+                      </ul>
+                    </div>
+                  }
                 </div>
               </section>
 
@@ -128,19 +137,27 @@
               <section id="how-we-use" class="scroll-mt-24 mb-12">
                 <h2 class="text-2xl font-bold text-gray-900 mb-6 pb-3 border-b border-gray-200">3. How We Use Your Information</h2>
                 <div class="space-y-4 text-gray-700 leading-relaxed">
-                  <p *ngFor="let paragraph of policySections[2].content" class="text-gray-700">
-                    {{ paragraph }}
-                  </p>
+                  @for (paragraph of policySections[2].content; track paragraph) {
+                    <p class="text-gray-700">{{ paragraph }}</p>
+                  }
                   
-                  <div *ngFor="let subsection of policySections[2].subsections" class="ml-4 mt-6">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-3">{{ subsection.title }}</h3>
-                    <ul class="space-y-2 text-gray-700">
-                      <li *ngFor="let item of subsection.content" class="flex items-start gap-2">
-                        <span *ngIf="item.startsWith('•')" class="flex-shrink-0 mt-1">•</span>
-                        <span>{{ item.startsWith('•') ? item.substring(2) : item }}</span>
-                      </li>
-                    </ul>
-                  </div>
+                  @for (subsection of policySections[2].subsections; track subsection.title) {
+                    <div class="ml-4 mt-6">
+                      <h3 class="text-lg font-semibold text-gray-800 mb-3">{{ subsection.title }}</h3>
+                      <ul class="space-y-2 text-gray-700">
+                        @for (item of subsection.content; track item) {
+                          <li class="flex items-start gap-2">
+                            @if (item.startsWith('•')) {
+                              <span class="flex-shrink-0 mt-1">•</span>
+                              <span>{{ item.substring(2) }}</span>
+                            } @else {
+                              <span>{{ item }}</span>
+                            }
+                          </li>
+                        }
+                      </ul>
+                    </div>
+                  }
                 </div>
               </section>
 
@@ -148,19 +165,27 @@
               <section id="information-sharing" class="scroll-mt-24 mb-12">
                 <h2 class="text-2xl font-bold text-gray-900 mb-6 pb-3 border-b border-gray-200">4. Information Sharing and Disclosure</h2>
                 <div class="space-y-4 text-gray-700 leading-relaxed">
-                  <p *ngFor="let paragraph of policySections[3].content" class="text-gray-700">
-                    {{ paragraph }}
-                  </p>
+                  @for (paragraph of policySections[3].content; track paragraph) {
+                    <p class="text-gray-700">{{ paragraph }}</p>
+                  }
                   
-                  <div *ngFor="let subsection of policySections[3].subsections" class="ml-4 mt-6">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-3">{{ subsection.title }}</h3>
-                    <ul class="space-y-2 text-gray-700">
-                      <li *ngFor="let item of subsection.content" class="flex items-start gap-2">
-                        <span *ngIf="item.startsWith('•')" class="flex-shrink-0 mt-1">•</span>
-                        <span>{{ item.startsWith('•') ? item.substring(2) : item }}</span>
-                      </li>
-                    </ul>
-                  </div>
+                  @for (subsection of policySections[3].subsections; track subsection.title) {
+                    <div class="ml-4 mt-6">
+                      <h3 class="text-lg font-semibold text-gray-800 mb-3">{{ subsection.title }}</h3>
+                      <ul class="space-y-2 text-gray-700">
+                        @for (item of subsection.content; track item) {
+                          <li class="flex items-start gap-2">
+                            @if (item.startsWith('•')) {
+                              <span class="flex-shrink-0 mt-1">•</span>
+                              <span>{{ item.substring(2) }}</span>
+                            } @else {
+                              <span>{{ item }}</span>
+                            }
+                          </li>
+                        }
+                      </ul>
+                    </div>
+                  }
                 </div>
               </section>
 
@@ -168,19 +193,27 @@
               <section id="data-security" class="scroll-mt-24 mb-12">
                 <h2 class="text-2xl font-bold text-gray-900 mb-6 pb-3 border-b border-gray-200">5. Data Security</h2>
                 <div class="space-y-4 text-gray-700 leading-relaxed">
-                  <p *ngFor="let paragraph of policySections[4].content" class="text-gray-700">
-                    {{ paragraph }}
-                  </p>
+                  @for (paragraph of policySections[4].content; track paragraph) {
+                    <p class="text-gray-700">{{ paragraph }}</p>
+                  }
                   
-                  <div *ngFor="let subsection of policySections[4].subsections" class="ml-4 mt-6">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-3">{{ subsection.title }}</h3>
-                    <ul class="space-y-2 text-gray-700">
-                      <li *ngFor="let item of subsection.content" class="flex items-start gap-2">
-                        <span *ngIf="item.startsWith('•')" class="flex-shrink-0 mt-1">•</span>
-                        <span>{{ item.startsWith('•') ? item.substring(2) : item }}</span>
-                      </li>
-                    </ul>
-                  </div>
+                  @for (subsection of policySections[4].subsections; track subsection.title) {
+                    <div class="ml-4 mt-6">
+                      <h3 class="text-lg font-semibold text-gray-800 mb-3">{{ subsection.title }}</h3>
+                      <ul class="space-y-2 text-gray-700">
+                        @for (item of subsection.content; track item) {
+                          <li class="flex items-start gap-2">
+                            @if (item.startsWith('•')) {
+                              <span class="flex-shrink-0 mt-1">•</span>
+                              <span>{{ item.substring(2) }}</span>
+                            } @else {
+                              <span>{{ item }}</span>
+                            }
+                          </li>
+                        }
+                      </ul>
+                    </div>
+                  }
                 </div>
               </section>
 
@@ -188,19 +221,27 @@
               <section id="data-retention" class="scroll-mt-24 mb-12">
                 <h2 class="text-2xl font-bold text-gray-900 mb-6 pb-3 border-b border-gray-200">6. Data Retention</h2>
                 <div class="space-y-4 text-gray-700 leading-relaxed">
-                  <p *ngFor="let paragraph of policySections[5].content" class="text-gray-700">
-                    {{ paragraph }}
-                  </p>
+                  @for (paragraph of policySections[5].content; track paragraph) {
+                    <p class="text-gray-700">{{ paragraph }}</p>
+                  }
                   
-                  <div *ngFor="let subsection of policySections[5].subsections" class="ml-4 mt-6">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-3">{{ subsection.title }}</h3>
-                    <ul class="space-y-2 text-gray-700">
-                      <li *ngFor="let item of subsection.content" class="flex items-start gap-2">
-                        <span *ngIf="item.startsWith('•')" class="flex-shrink-0 mt-1">•</span>
-                        <span>{{ item.startsWith('•') ? item.substring(2) : item }}</span>
-                      </li>
-                    </ul>
-                  </div>
+                  @for (subsection of policySections[5].subsections; track subsection.title) {
+                    <div class="ml-4 mt-6">
+                      <h3 class="text-lg font-semibold text-gray-800 mb-3">{{ subsection.title }}</h3>
+                      <ul class="space-y-2 text-gray-700">
+                        @for (item of subsection.content; track item) {
+                          <li class="flex items-start gap-2">
+                            @if (item.startsWith('•')) {
+                              <span class="flex-shrink-0 mt-1">•</span>
+                              <span>{{ item.substring(2) }}</span>
+                            } @else {
+                              <span>{{ item }}</span>
+                            }
+                          </li>
+                        }
+                      </ul>
+                    </div>
+                  }
                 </div>
               </section>
 
@@ -208,19 +249,27 @@
               <section id="your-rights" class="scroll-mt-24 mb-12">
                 <h2 class="text-2xl font-bold text-gray-900 mb-6 pb-3 border-b border-gray-200">7. Your Rights and Choices</h2>
                 <div class="space-y-4 text-gray-700 leading-relaxed">
-                  <p *ngFor="let paragraph of policySections[6].content" class="text-gray-700">
-                    {{ paragraph }}
-                  </p>
+                  @for (paragraph of policySections[6].content; track paragraph) {
+                    <p class="text-gray-700">{{ paragraph }}</p>
+                  }
                   
-                  <div *ngFor="let subsection of policySections[6].subsections" class="ml-4 mt-6">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-3">{{ subsection.title }}</h3>
-                    <ul class="space-y-2 text-gray-700">
-                      <li *ngFor="let item of subsection.content" class="flex items-start gap-2">
-                        <span *ngIf="item.startsWith('•')" class="flex-shrink-0 mt-1">•</span>
-                        <span>{{ item.startsWith('•') ? item.substring(2) : item }}</span>
-                      </li>
-                    </ul>
-                  </div>
+                  @for (subsection of policySections[6].subsections; track subsection.title) {
+                    <div class="ml-4 mt-6">
+                      <h3 class="text-lg font-semibold text-gray-800 mb-3">{{ subsection.title }}</h3>
+                      <ul class="space-y-2 text-gray-700">
+                        @for (item of subsection.content; track item) {
+                          <li class="flex items-start gap-2">
+                            @if (item.startsWith('•')) {
+                              <span class="flex-shrink-0 mt-1">•</span>
+                              <span>{{ item.substring(2) }}</span>
+                            } @else {
+                              <span>{{ item }}</span>
+                            }
+                          </li>
+                        }
+                      </ul>
+                    </div>
+                  }
                 </div>
               </section>
 
@@ -228,19 +277,27 @@
               <section id="cookies-tracking" class="scroll-mt-24 mb-12">
                 <h2 class="text-2xl font-bold text-gray-900 mb-6 pb-3 border-b border-gray-200">8. Cookies and Tracking Technologies</h2>
                 <div class="space-y-4 text-gray-700 leading-relaxed">
-                  <p *ngFor="let paragraph of policySections[7].content" class="text-gray-700">
-                    {{ paragraph }}
-                  </p>
+                  @for (paragraph of policySections[7].content; track paragraph) {
+                    <p class="text-gray-700">{{ paragraph }}</p>
+                  }
                   
-                  <div *ngFor="let subsection of policySections[7].subsections" class="ml-4 mt-6">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-3">{{ subsection.title }}</h3>
-                    <ul class="space-y-2 text-gray-700">
-                      <li *ngFor="let item of subsection.content" class="flex items-start gap-2">
-                        <span *ngIf="item.startsWith('•')" class="flex-shrink-0 mt-1">•</span>
-                        <span>{{ item.startsWith('•') ? item.substring(2) : item }}</span>
-                      </li>
-                    </ul>
-                  </div>
+                  @for (subsection of policySections[7].subsections; track subsection.title) {
+                    <div class="ml-4 mt-6">
+                      <h3 class="text-lg font-semibold text-gray-800 mb-3">{{ subsection.title }}</h3>
+                      <ul class="space-y-2 text-gray-700">
+                        @for (item of subsection.content; track item) {
+                          <li class="flex items-start gap-2">
+                            @if (item.startsWith('•')) {
+                              <span class="flex-shrink-0 mt-1">•</span>
+                              <span>{{ item.substring(2) }}</span>
+                            } @else {
+                              <span>{{ item }}</span>
+                            }
+                          </li>
+                        }
+                      </ul>
+                    </div>
+                  }
                 </div>
               </section>
 
@@ -248,9 +305,9 @@
               <section id="international-transfers" class="scroll-mt-24 mb-12">
                 <h2 class="text-2xl font-bold text-gray-900 mb-6 pb-3 border-b border-gray-200">9. International Data Transfers</h2>
                 <div class="space-y-4 text-gray-700 leading-relaxed">
-                  <p *ngFor="let paragraph of policySections[8].content" class="text-gray-700">
-                    {{ paragraph }}
-                  </p>
+                  @for (paragraph of policySections[8].content; track paragraph) {
+                    <p class="text-gray-700">{{ paragraph }}</p>
+                  }
                 </div>
               </section>
 
@@ -258,9 +315,9 @@
               <section id="children-privacy" class="scroll-mt-24 mb-12">
                 <h2 class="text-2xl font-bold text-gray-900 mb-6 pb-3 border-b border-gray-200">10. Children's Privacy</h2>
                 <div class="space-y-4 text-gray-700 leading-relaxed">
-                  <p *ngFor="let paragraph of policySections[9].content" class="text-gray-700">
-                    {{ paragraph }}
-                  </p>
+                  @for (paragraph of policySections[9].content; track paragraph) {
+                    <p class="text-gray-700">{{ paragraph }}</p>
+                  }
                 </div>
               </section>
 
@@ -268,9 +325,9 @@
               <section id="third-party-links" class="scroll-mt-24 mb-12">
                 <h2 class="text-2xl font-bold text-gray-900 mb-6 pb-3 border-b border-gray-200">11. Third-Party Links</h2>
                 <div class="space-y-4 text-gray-700 leading-relaxed">
-                  <p *ngFor="let paragraph of policySections[10].content" class="text-gray-700">
-                    {{ paragraph }}
-                  </p>
+                  @for (paragraph of policySections[10].content; track paragraph) {
+                    <p class="text-gray-700">{{ paragraph }}</p>
+                  }
                 </div>
               </section>
 
@@ -278,9 +335,9 @@
               <section id="contact-us" class="scroll-mt-24 mb-12">
                 <h2 class="text-2xl font-bold text-gray-900 mb-6 pb-3 border-b border-gray-200">12. Contact Us</h2>
                 <div class="space-y-4 text-gray-700 leading-relaxed">
-                  <p *ngFor="let paragraph of policySections[11].content" class="text-gray-700">
-                    {{ paragraph }}
-                  </p>
+                  @for (paragraph of policySections[11].content; track paragraph) {
+                    <p class="text-gray-700">{{ paragraph }}</p>
+                  }
                 </div>
               </section>
 
@@ -288,9 +345,9 @@
               <section id="changes-policy" class="scroll-mt-24">
                 <h2 class="text-2xl font-bold text-gray-900 mb-6 pb-3 border-b border-gray-200">13. Changes to This Privacy Policy</h2>
                 <div class="space-y-4 text-gray-700 leading-relaxed">
-                  <p *ngFor="let paragraph of policySections[12].content" class="text-gray-700">
-                    {{ paragraph }}
-                  </p>
+                  @for (paragraph of policySections[12].content; track paragraph) {
+                    <p class="text-gray-700">{{ paragraph }}</p>
+                  }
                 </div>
               </section>
 
