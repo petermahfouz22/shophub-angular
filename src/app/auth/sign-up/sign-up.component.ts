@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { SocialLoginComponent } from '../social-login/social-login.component';
+import { RegisterData } from '../../interfaces/auth';
 
 @Component({
   selector: 'app-sign-up',
@@ -23,6 +24,7 @@ export class SignUpComponent implements OnInit {
   showPassword = false;
   showConfirmPassword = false;
   isSubmitting = false;
+  errorMessage = '';
 
   constructor(
     private fb: FormBuilder,
@@ -37,7 +39,8 @@ export class SignUpComponent implements OnInit {
   private initForm(): void {
     this.signupForm = this.fb.group(
       {
-        name: ['', [Validators.required, Validators.minLength(2)]],
+        first_name: ['', [Validators.required, Validators.minLength(2)]],
+        last_name: ['', [Validators.required, Validators.minLength(2)]],
         email: ['', [Validators.required, Validators.email]],
         password: [
           '',
@@ -54,7 +57,6 @@ export class SignUpComponent implements OnInit {
           [Validators.required, Validators.pattern(/^[0-9+\-\s]{8,15}$/)],
         ],
         birthday: ['', [Validators.required]],
-        address: ['', [Validators.required, Validators.minLength(5)]],
         acceptTerms: [false, [Validators.requiredTrue]],
       },
       {
@@ -78,8 +80,11 @@ export class SignUpComponent implements OnInit {
       : { passwordMismatch: true };
   }
 
-  get name() {
-    return this.signupForm.get('name');
+  get first_name() {
+    return this.signupForm.get('first_name');
+  }
+  get last_name() {
+    return this.signupForm.get('last_name');
   }
   get email() {
     return this.signupForm.get('email');
@@ -149,21 +154,43 @@ export class SignUpComponent implements OnInit {
       this.markAllFieldsAsTouched();
       return;
     }
-    this.isSubmitting = true;
-    this.authService
-      .register({ ...this.signupForm.value })
-      .subscribe((res) => console.log(res));
-    console.log('Form submitted:', this.signupForm.value);
 
-    // Simulate API call
-    setTimeout(() => {
-      this.isSubmitting = false;
-      // Here you would typically:
-      // 1. Send data to your backend
-      // 2. Handle response
-      // 3. Redirect to login or dashboard
-      this.router.navigate(['/login']);
-    }, 2000);
+    this.isSubmitting = true;
+    this.errorMessage = '';
+
+    const registerData: RegisterData = {
+      first_name: this.signupForm.value.first_name,
+      last_name: this.signupForm.value.last_name,
+      email: this.signupForm.value.email,
+      password: this.signupForm.value.password,
+      password_confirmation: this.signupForm.value.confirmPassword,
+      gender: this.signupForm.value.gender,
+      birthday: this.signupForm.value.birthday,
+      phone: this.signupForm.value.phone,
+    };
+
+    console.log('Registering with data:', registerData);
+
+    this.authService.register(registerData).subscribe({
+      next: (response) => {
+        console.log('Registration successful:', response);
+        this.isSubmitting = false;
+        if (response.success) {
+          // Auto login after registration if token is returned
+          if (response.token) {
+            this.authService.setAuthData(response.token, response.user, true);
+            this.router.navigate(['/']);
+          } else {
+            this.router.navigate(['/login']);
+          }
+        }
+      },
+      error: (error) => {
+        console.error('Registration error:', error);
+        this.isSubmitting = false;
+        this.errorMessage = error.error?.message || 'Registration failed. Please try again.';
+      },
+    });
   }
 
   private markAllFieldsAsTouched(): void {

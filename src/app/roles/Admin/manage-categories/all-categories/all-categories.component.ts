@@ -4,8 +4,9 @@ import { CategoryService } from '../../../../services/category.service';
 import { Category } from '../../../../interfaces/category';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { DatePipe, CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { LoaderComponent } from '../../../../shared/loader/loader.component';
+
 @Component({
   selector: 'app-all-categories',
   imports: [RouterLink, FormsModule, CommonModule, LoaderComponent],
@@ -38,13 +39,13 @@ export class AllCategoriesComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
 
+    // Use adminGetCategories for admin panel (supports status filter)
     this.categoryService
-      .getCategories(
+      .adminGetCategories(
         this.currentPage,
         this.perPage,
         this.searchTerm,
         this.statusFilter
-        // this.parentFilter
       )
       .subscribe({
         next: (response) => {
@@ -72,7 +73,7 @@ export class AllCategoriesComponent implements OnInit {
       },
     });
   }
-  // في AllCategoriesComponent
+
   getImageUrl(imageUrl: string | null): string {
     if (!imageUrl) {
       return 'https://via.placeholder.com/50x50?text=No+Image';
@@ -80,21 +81,21 @@ export class AllCategoriesComponent implements OnInit {
 
     console.log('Original image URL from DB:', imageUrl);
 
-    // إذا كان المسار يبدأ بـ /storage/
+    // If path starts with /storage/
     if (imageUrl.startsWith('/storage/')) {
-      // قم بتحويل المسار إلى URL كامل
       const fullUrl = `http://localhost:8000${imageUrl}`;
       console.log('Converted to full URL:', fullUrl);
       return fullUrl;
     }
 
-    // إذا كان المسار كاملاً بالفعل
+    // If path is already full URL
     if (imageUrl.startsWith('http')) {
       return imageUrl;
     }
 
     return imageUrl;
   }
+
   onSearch(): void {
     this.currentPage = 1;
     this.loadCategories();

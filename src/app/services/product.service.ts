@@ -1,112 +1,166 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Category, Product, ProductFormData } from '../interfaces/product';
-import { Url } from '../urls.environment';
+import { Product, ProductFormData } from '../interfaces/product';
+import { Url, AdminUrl } from '../urls.environment';
 import { catchError } from 'rxjs';
+
+export interface ProductsResponse {
+  success?: boolean;
+  data?: Product[];
+  message?: string;
+}
+
+export interface ProductResponse {
+  success: boolean;
+  data: Product;
+  message?: string;
+}
+
+export interface PaginatedProductsResponse {
+  success: boolean;
+  data: {
+    data: Product[];
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+  };
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService {
-  private apiUrl = Url.apiUrl;
-  private adminUrl = Url.productsUrl;
+  private publicUrl = Url.productsUrl;
+  private adminUrl = AdminUrl.productsUrl;
+
   constructor(private http: HttpClient) {}
 
   // ==============================
   // 🟢 Public (User) Endpoints
   // ==============================
 
-  /** يحصل على كل المنتجات المتاحة للمستخدم */
+  /** Get all active products for public view */
   getAllProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.apiUrl}/products`);
+    return this.http.get<Product[]>(this.publicUrl);
   }
 
-  /** يحصل على تفاصيل منتج واحد */
-  getProductById(id: number): Observable<Product> {
-    return this.http.get<Product>(`${this.apiUrl}/products/${id}`);
+  /** Get paginated products with optional filters */
+  getProducts(params?: {
+    page?: number;
+    per_page?: number;
+    category_id?: number;
+    brand_id?: number;
+    search?: string;
+    min_price?: number;
+    max_price?: number;
+    sort_by?: string;
+    sort_order?: 'asc' | 'desc';
+  }): Observable<PaginatedProductsResponse> {
+    let httpParams = new HttpParams();
+    
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          httpParams = httpParams.set(key, value.toString());
+        }
+      });
+    }
+
+    return this.http.get<PaginatedProductsResponse>(this.publicUrl, { params: httpParams });
   }
 
-  // /** يحصل على كل التصنيفات */
-  // getCategories(): Observable<Category[]> {
-  //   return this.http.get<Category[]>(`${this.apiUrl}/categories`);
-  // }
+  /** Get product details by ID */
+  getProductById(id: number): Observable<ProductResponse> {
+    return this.http.get<ProductResponse>(`${this.publicUrl}/${id}`);
+  }
+
+  /** Get form data (categories and brands) for product forms */
+  getFormData(): Observable<{ success: boolean; data: ProductFormData }> {
+    return this.http.get<{ success: boolean; data: ProductFormData }>(`${this.publicUrl}/form/data`);
+  }
 
   // ==============================
   // 🔵 Admin Endpoints
   // ==============================
 
-  /** يحصل على كل المنتجات (بما في ذلك inactive أو المحذوفة مثلاً) */
-  adminGetProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(this.adminUrl);
-  }
-  adminGetProductById(id: number): Observable<Product> {
-    return this.http.get<Product>(`${this.adminUrl}/${id}`);
+  /** Get all products for admin (including inactive) */
+  adminGetProducts(params?: {
+    page?: number;
+    per_page?: number;
+    search?: string;
+    status?: string;
+    category_id?: number;
+    brand_id?: number;
+  }): Observable<PaginatedProductsResponse> {
+    let httpParams = new HttpParams();
+    
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          httpParams = httpParams.set(key, value.toString());
+        }
+      });
+    }
+
+    return this.http.get<PaginatedProductsResponse>(this.adminUrl, { params: httpParams });
   }
 
-  /** إنشاء منتج جديد */
-  adminCreateProduct(
-    product: Product
-  ): Observable<{ message: string; product: Product }> {
-    return this.http.post<{ message: string; product: Product }>(
-      `${this.adminUrl}/create`,
-      product
+  /** Get product by ID for admin */
+  adminGetProductById(id: number): Observable<ProductResponse> {
+    return this.http.get<ProductResponse>(`${this.adminUrl}/${id}`);
+  }
+
+  /** Create new product (multipart/form-data for image upload) */
+  adminCreateProduct(productData: FormData): Observable<{ success: boolean; message: string; data: Product }> {
+    return this.http.post<{ success: boolean; message: string; data: Product }>(
+      this.adminUrl,
+      productData
     );
   }
 
+  /** Update product */
   adminUpdateProduct(
     id: number,
-    product: Product
-  ): Observable<{ message: string; product: Product }> {
+    productData: any
+  ): Observable<{ success: boolean; message: string; data: Product }> {
     return this.http
-      .put<{ message: string; product: Product }>(
-        `${this.adminUrl}/edit/${id}`,
-        product
+      .put<{ success: boolean; message: string; data: Product }>(
+        `${this.adminUrl}/${id}`,
+        productData
       )
       .pipe(
         catchError((error) => {
           console.log('🔴 Full error response:', error);
-          console.log('🔴 Validation errors:', error.error.errors);
-          console.log('🔴 Error message:', error.error.message);
+          console.log('🔴 Validation errors:', error.error?.errors);
+          console.log('🔴 Error message:', error.error?.message);
           throw error;
         })
       );
   }
 
-  /** حذف منتج */
-  adminDeleteProduct(id: number): Observable<{ message: string }> {
-    return this.http.delete<{ message: string }>(
+  /** Delete product */
+  adminDeleteProduct(id: number): Observable<{ success: boolean; message: string }> {
+    return this.http.delete<{ success: boolean; message: string }>(
       `${this.adminUrl}/${id}`
     );
   }
 
-  /** تحديث حالة منتج (active / inactive) */
+  /** Toggle product status (active/inactive) */
   adminToggleProductStatus(
     id: number
-  ): Observable<{ message: string; product: Product }> {
-    return this.http.patch<{ message: string; product: Product }>(
+  ): Observable<{ success: boolean; message: string; data: Product }> {
+    return this.http.patch<{ success: boolean; message: string; data: Product }>(
       `${this.adminUrl}/${id}/status`,
       {}
     );
   }
 
-  /** جلب بيانات الفورم (categories, brands, etc...) */
-  adminGetFormData(): Observable<ProductFormData> {
-    return this.http.get<ProductFormData>(
+  /** Get form data for admin product forms */
+  adminGetFormData(): Observable<{ success: boolean; data: ProductFormData }> {
+    return this.http.get<{ success: boolean; data: ProductFormData }>(
       `${this.adminUrl}/form/data`
     );
   }
-
-  // // في product.service.ts
-  // getProductsByCategory(
-  //   categoryId: number,
-  //   page: number = 1,
-  //   perPage: number = 4
-  // ): Observable<ProductResponse> {
-  //   let params = new HttpParams()
-  //     .set('page', page.toString())
-  //     .set('per_page', perPage.toString())
-  //     .set('category_id', categoryId.toString());
-
-  //   return this.http.get<ProductResponse>(this.apiUrl, { params });
-  // }
 }

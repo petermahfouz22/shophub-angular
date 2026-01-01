@@ -21,6 +21,7 @@ import { CartService } from './../../services/cart.service';
 import { FavoriteService } from '../../services/favorite.service';
 import { SearchComponent } from '../search/search.component';
 import { filter } from 'rxjs/operators';
+import { getFullName } from '../../interfaces/user';
 
 @Component({
   selector: 'app-nav',
@@ -39,7 +40,7 @@ export class NavComponent implements OnInit, OnDestroy {
 
   // Search & UI State
   wantSearch = false;
-  isMobileMenuOpen = false; // إضافة هذا المتغير المطلوب في الـ template
+  isMobileMenuOpen = false;
 
   // Cart
   cartCounter = computed(() => this.cartService.getTotalItems());
@@ -53,9 +54,8 @@ export class NavComponent implements OnInit, OnDestroy {
   firstLetter = signal('U');
   userName = signal('User');
   user = signal(this.authService.getCurrentUser());
-  // إضافة هذا للإشارة إلى بيانات المستخدم
 
-  // المتغيرات الإضافية
+  // Additional variables
   f: any = null;
 
   ngOnInit(): void {
@@ -71,8 +71,9 @@ export class NavComponent implements OnInit, OnDestroy {
     this.authService.getCurrentUserObservable().subscribe((user) => {
       this.user.set(user);
       if (user) {
-        this.userName.set(user.name || 'User');
-        this.firstLetter.set(user.name?.charAt(0)?.toUpperCase() || 'U');
+        const fullName = getFullName(user);
+        this.userName.set(fullName || 'User');
+        this.firstLetter.set(user.first_name?.charAt(0)?.toUpperCase() || 'U');
       }
     });
   }
@@ -104,8 +105,14 @@ export class NavComponent implements OnInit, OnDestroy {
   private updateUserInfo(): void {
     const user = this.authService.getCurrentUser();
     this.user.set(user);
-    this.userName.set(user?.name || 'User');
-    this.firstLetter.set(user?.name?.charAt(0)?.toUpperCase() || 'U');
+    if (user) {
+      const fullName = getFullName(user);
+      this.userName.set(fullName || 'User');
+      this.firstLetter.set(user.first_name?.charAt(0)?.toUpperCase() || 'U');
+    } else {
+      this.userName.set('User');
+      this.firstLetter.set('U');
+    }
   }
 
   // Navigation & UI Methods
@@ -133,7 +140,7 @@ export class NavComponent implements OnInit, OnDestroy {
     this.isLoggingOut = true;
     try {
       await this.authService.logout();
-      this.closeMobileMenu(); // إغلاق القائمة بعد تسجيل الخروج
+      this.closeMobileMenu();
     } catch (error) {
       console.error('Logout error:', error);
     } finally {

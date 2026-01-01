@@ -27,11 +27,11 @@
                 <div class="flex-shrink-0 h-10 w-10">
                   <div
                     class="h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold">
-                    {{ user.name.charAt(0).toUpperCase() }}
+                    {{ user.first_name.charAt(0).toUpperCase() }}
                   </div>
                 </div>
                 <div class="ml-4">
-                  <div class="text-sm font-medium text-gray-900">{{ user.name }}</div>
+                  <div class="text-sm font-medium text-gray-900">{{ user.first_name }} {{ user.last_name }}</div>
                   <div class="text-sm text-gray-500">{{ user.email }}</div>
                 </div>
               </div>
@@ -81,7 +81,7 @@
     <div class="p-6">
       <h2 class="text-lg font-semibold mb-4">Delete User</h2>
       <p class="text-gray-600 mb-6">
-        Are you sure you want to delete user "{{ selectedUser?.name }}"?
+        Are you sure you want to delete user "{{ selectedUser?.first_name }} {{ selectedUser?.last_name }}"?
         This action cannot be undone.
       </p>
 

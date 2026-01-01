@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { User, UserFormData } from '../../../../interfaces/user';
+import { User } from '../../../../interfaces/user';
 import { UserService } from '../../../../services/user.service';
 import { finalize } from 'rxjs/operators';
 import { FormsModule } from '@angular/forms';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { LoaderComponent } from '../../../../shared/loader/loader.component';
+import { getFullName } from '../../../../interfaces/user';
 
 @Component({
   selector: 'app-index',
-  imports: [FormsModule, DatePipe, CommonModule,LoaderComponent],
+  imports: [FormsModule, DatePipe, CommonModule, LoaderComponent],
   templateUrl: './index.component.html',
 })
 export class IndexComponent implements OnInit {
@@ -19,6 +20,9 @@ export class IndexComponent implements OnInit {
   // Only delete modal remains
   showDeleteModal = false;
   selectedUser: User | null = null;
+
+  // Helper function for templates
+  getFullName = getFullName;
 
   constructor(private userService: UserService, private router: Router) {}
 
@@ -34,10 +38,15 @@ export class IndexComponent implements OnInit {
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
         next: (response) => {
-          this.users = response.data;
+          // Handle paginated response - extract data array
+          if (response.data && 'data' in response.data) {
+            this.users = response.data.data;
+          } else {
+            this.users = response.data as unknown as User[];
+          }
         },
         error: (error) => {
-          console.error('Error isLoading users:', error);
+          console.error('Error loading users:', error);
         },
       });
   }

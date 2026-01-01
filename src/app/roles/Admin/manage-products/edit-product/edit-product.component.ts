@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { ProductService } from '../../../../services/product.service';
+import { ProductService, ProductResponse } from '../../../../services/product.service';
 import { Category, Brand, Product } from '../../../../interfaces/product';
 
 @Component({
@@ -36,16 +36,17 @@ export class EditProductComponent implements OnInit {
     this.productId = Number(this.route.snapshot.paramMap.get('id'));
     this.loadFormData();
 
-    // 👇 نحمل المنتج ونبني الـ form مباشرة بعد ما توصله البيانات
+    // Load product and build form with data
     this.productService.adminGetProductById(this.productId).subscribe({
-      next: (product: Product) => {
-        this.buildForm(product);
+      next: (response: ProductResponse) => {
+        // Extract product from response.data
+        this.buildForm(response.data);
       },
       error: () => (this.errorMessage = 'Failed to load product.'),
     });
   }
 
-  // ⬇️ هنا بنبني الـ form بالقيم الجاية من الـ API
+  // Build form with product values from API
   buildForm(product: Product): void {
     console.log(product.name);
     this.form = this.fb.group({
@@ -87,39 +88,40 @@ export class EditProductComponent implements OnInit {
 
   loadFormData(): void {
     this.productService.adminGetFormData().subscribe({
-      next: (res) => {
-        this.categories = res.categories;
-        this.brands = res.brands;
+      next: (response) => {
+        // Access categories and brands from response.data
+        this.categories = response.data.categories;
+        this.brands = response.data.brands;
       },
     });
   }
 
   onSubmit(): void {
-  if (!this.form || this.form.invalid) {
-    this.form?.markAllAsTouched();
-    return;
+    if (!this.form || this.form.invalid) {
+      this.form?.markAllAsTouched();
+      return;
+    }
+
+    const updatedProduct = { ...this.form.value };
+
+    // Log the actual data being sent
+    console.log('🟡 Form Data:', this.form.value);
+    console.log('🟡 Gallery Array:', this.gallery.value);
+    console.log('🟡 Final Product Data:', updatedProduct);
+    console.log('🟡 Product ID:', this.productId);
+
+    this.productService
+      .adminUpdateProduct(this.productId, updatedProduct)
+      .subscribe({
+        next: (res) => {
+          this.successMessage = res.message;
+          setTimeout(() => this.router.navigate(['/admin/products']), 1200);
+        },
+        error: (err) => {
+          console.error('🔴 Update Error:', err);
+          console.error('🔴 Error Details:', err.error);
+          this.errorMessage = 'Failed to update product.';
+        },
+      });
   }
-
-  const updatedProduct = { ...this.form.value };
-  
-  // Log the actual data being sent
-  console.log('🟡 Form Data:', this.form.value);
-  console.log('🟡 Gallery Array:', this.gallery.value);
-  console.log('🟡 Final Product Data:', updatedProduct);
-  console.log('🟡 Product ID:', this.productId);
-
-  this.productService
-    .adminUpdateProduct(this.productId, updatedProduct)
-    .subscribe({
-      next: (res) => {
-        this.successMessage = res.message;
-        setTimeout(() => this.router.navigate(['/admin/products']), 1200);
-      },
-      error: (err) => {
-        console.error('🔴 Update Error:', err);
-        console.error('🔴 Error Details:', err.error);
-        this.errorMessage = 'Failed to update product.';
-      },
-    });
-}
 }

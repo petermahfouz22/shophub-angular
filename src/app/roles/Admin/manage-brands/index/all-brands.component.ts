@@ -1,7 +1,7 @@
 // src/app/admin/components/brand-list/brand-list.component.ts
 import { Component, OnInit } from '@angular/core';
 import { BrandService } from '../../../../services/brand.service';
-import {Brand, PaginatedBrands, BrandResponse} from '../../../../interfaces/brand'
+import { Brand, PaginatedBrands, BrandsResponse } from '../../../../interfaces/brand';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -10,8 +10,8 @@ import { LoaderComponent } from '../../../../shared/loader/loader.component';
 @Component({
   selector: 'app-all-brands',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule,LoaderComponent],
-  templateUrl: './all-brands.component.html'
+  imports: [CommonModule, RouterModule, FormsModule, LoaderComponent],
+  templateUrl: './all-brands.component.html',
 })
 export class AllBrandsComponent implements OnInit {
   brands: Brand[] = [];
@@ -19,7 +19,7 @@ export class AllBrandsComponent implements OnInit {
   isLoading = false;
   searchTerm = '';
   statusFilter = '';
-  
+
   // Pagination
   currentPage = 1;
   perPage = 10;
@@ -35,10 +35,10 @@ export class AllBrandsComponent implements OnInit {
 
   loadBrands(): void {
     this.isLoading = true;
-    
+
     const params: any = {
       page: this.currentPage,
-      per_page: this.perPage
+      per_page: this.perPage,
     };
 
     if (this.searchTerm) {
@@ -50,18 +50,27 @@ export class AllBrandsComponent implements OnInit {
     }
 
     this.brandService.getBrands(params).subscribe({
-      next: (response: BrandResponse) => {
+      next: (response: BrandsResponse) => {
         if (response.success) {
-          this.paginatedBrands = response.data;
-          this.brands = response.data.data;
-          this.totalItems = response.data.total;
+          // Handle paginated response
+          const data = response.data;
+          if ('data' in data && Array.isArray(data.data)) {
+            // Paginated response
+            this.paginatedBrands = data as PaginatedBrands;
+            this.brands = data.data;
+            this.totalItems = data.total;
+          } else if (Array.isArray(data)) {
+            // Array response
+            this.brands = data;
+            this.totalItems = data.length;
+          }
         }
         this.isLoading = false;
       },
       error: (error) => {
-        console.error('Error isLoading brands:', error);
+        console.error('Error loading brands:', error);
         this.isLoading = false;
-      }
+      },
     });
   }
 
@@ -76,9 +85,13 @@ export class AllBrandsComponent implements OnInit {
   }
 
   updateStatus(brand: Brand, newStatus: 'active' | 'inactive'): void {
-    if (confirm(`Are you sure you want to ${newStatus === 'active' ? 'activate' : 'deactivate'} this brand?`)) {
+    if (
+      confirm(
+        `Are you sure you want to ${newStatus === 'active' ? 'activate' : 'deactivate'} this brand?`
+      )
+    ) {
       this.brandService.updateBrandStatus(brand.id!, newStatus).subscribe({
-        next: (response: BrandResponse) => {
+        next: (response) => {
           if (response.success) {
             brand.status = newStatus;
             alert('Brand status updated successfully');
@@ -89,7 +102,7 @@ export class AllBrandsComponent implements OnInit {
         error: (error) => {
           console.error('Error updating brand status:', error);
           alert('Error updating brand status');
-        }
+        },
       });
     }
   }
@@ -97,7 +110,7 @@ export class AllBrandsComponent implements OnInit {
   deleteBrand(id: number): void {
     if (confirm('Are you sure you want to delete this brand?')) {
       this.brandService.deleteBrand(id).subscribe({
-        next: (response: BrandResponse) => {
+        next: (response) => {
           if (response.success) {
             this.loadBrands();
             alert('Brand deleted successfully');
@@ -112,7 +125,7 @@ export class AllBrandsComponent implements OnInit {
           } else {
             alert('Error deleting brand');
           }
-        }
+        },
       });
     }
   }

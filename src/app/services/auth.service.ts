@@ -4,19 +4,22 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { User } from '../interfaces/user';
+import { User, getFullName } from '../interfaces/user';
 import { Url } from '../urls.environment';
 import {
   LoginResponse,
+  RegisterData,
   GoogleAuthResponse,
   ForgotPasswordResponse,
   ResetPasswordResponse,
 } from '../interfaces/auth';
+
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = `${Url.apiUrl}/auth`;
+  private apiUrl = Url.authUrl;
+  private profileUrl = Url.profileUrl;
   private isAuthenticated = new BehaviorSubject<boolean>(false);
   private currentUser = new BehaviorSubject<User | null>(null);
 
@@ -25,24 +28,27 @@ export class AuthService {
   }
 
   // ============ REGISTRATION & LOGIN ============
-  register(userData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/register`, userData);
+  register(userData: RegisterData): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/register`, userData);
   }
 
   login(credentials: {
     email: string;
     password: string;
-    rememberMe: boolean;
+    rememberMe?: boolean;
   }): Observable<LoginResponse> {
     return this.http
-      .post<LoginResponse>(`${this.apiUrl}/login`, credentials)
+      .post<LoginResponse>(`${this.apiUrl}/login`, {
+        email: credentials.email,
+        password: credentials.password,
+      })
       .pipe(
         tap((response) => {
           if (response.success && response.token) {
             this.setAuthData(
               response.token,
               response.user,
-              credentials.rememberMe
+              credentials.rememberMe ?? false
             );
           }
         }),
@@ -95,13 +101,18 @@ export class AuthService {
   }
 
   // ============ PROFILE MANAGEMENT ============
-  updateProfile(data: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/update-profile`, data).pipe(
-      tap((response: any) => {
-        if (response.success && response.user) {
-          localStorage.setItem('user_data', JSON.stringify(response.user));
-          sessionStorage.setItem('user_data', JSON.stringify(response.user));
-          this.currentUser.next(response.user);
+  getProfile(): Observable<{ success: boolean; data: User }> {
+    return this.http.get<{ success: boolean; data: User }>(this.profileUrl);
+  }
+
+  updateProfile(data: Partial<User>): Observable<{ success: boolean; data: User; message: string }> {
+    return this.http.put<{ success: boolean; data: User; message: string }>(this.profileUrl, data).pipe(
+      tap((response) => {
+        if (response.success && response.data) {
+          // Update stored user data
+          const storage = localStorage.getItem('auth_token') ? localStorage : sessionStorage;
+          storage.setItem('user_data', JSON.stringify(response.data));
+          this.currentUser.next(response.data);
         }
       })
     );
@@ -118,7 +129,8 @@ export class AuthService {
     this.currentUser.next(user);
 
     console.log('✅ Authentication data set successfully', {
-      user: user.name,
+      user: getFullName(user),
+      role: user.role,
       hasToken: !!token,
       storage: rememberMe ? 'localStorage' : 'sessionStorage',
     });
@@ -144,6 +156,18 @@ export class AuthService {
     return (
       localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token')
     );
+  }
+
+  // Check if user is admin
+  isAdmin(): boolean {
+    const user = this.currentUser.value;
+    return user?.role === 'admin';
+  }
+
+  // Check if user has specific role
+  hasRole(role: 'admin' | 'customer'): boolean {
+    const user = this.currentUser.value;
+    return user?.role === role;
   }
 
   // ============ LOGOUT ============
@@ -176,10 +200,10 @@ export class AuthService {
 
     if (token && userData) {
       try {
-        const user = JSON.parse(userData);
+        const user = JSON.parse(userData) as User;
         this.isAuthenticated.next(true);
         this.currentUser.next(user);
-        console.log('✅ Existing auth found:', user.name);
+        console.log('✅ Existing auth found:', getFullName(user));
       } catch (error) {
         console.error('Error parsing user data:', error);
         this.clearAuthData();

@@ -1,8 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Product } from '../../../../interfaces/product';
-import { ProductService } from '../../../../services/product.service';
+import { ProductService, ProductResponse } from '../../../../services/product.service';
 import { CommonModule } from '@angular/common';
+
 @Component({
   selector: 'app-show-product',
   imports: [CommonModule],
@@ -11,16 +12,17 @@ import { CommonModule } from '@angular/common';
 export class ShowProductComponent implements OnInit {
   product!: Product;
   isLoading = false;
-  successMessage = ''; // ✅ أضف ده
+  successMessage = '';
   errorMessage = '';
   private activatedRoute = inject(ActivatedRoute);
   private productService = inject(ProductService);
   private router = inject(Router);
+
   ngOnInit(): void {
-    // 📦 نجيب الـ id من الـ URL
+    // Get ID from URL
     this.activatedRoute.paramMap.subscribe({
       next: (params) => {
-        const id = Number(params.get('id')); // ✅ حولها لرقم
+        const id = Number(params.get('id'));
         if (id) {
           this.getProductDetails(id);
         } else {
@@ -29,12 +31,14 @@ export class ShowProductComponent implements OnInit {
       },
     });
   }
+
   getProductDetails(id: number) {
     this.isLoading = true;
     this.productService.adminGetProductById(id).subscribe({
-      next: (data) => {
-        this.product = data;
-        console.log(data);
+      next: (response: ProductResponse) => {
+        // Extract product from response.data
+        this.product = response.data;
+        console.log(response.data);
         this.isLoading = false;
       },
       error: (err) => {
@@ -45,13 +49,14 @@ export class ShowProductComponent implements OnInit {
     });
   }
 
-  // 🟢 Update Product Status (toggle)
+  // Toggle product status
   onToggleStatus() {
     if (!this.product) return;
     this.productService.adminToggleProductStatus(this.product.id!).subscribe({
       next: (res) => {
         this.successMessage = res.message;
-        this.product = res.product; // update UI immediately
+        // Update product from response.data
+        this.product = res.data;
       },
       error: () => {
         this.errorMessage = 'Failed to update product status.';
@@ -59,13 +64,13 @@ export class ShowProductComponent implements OnInit {
     });
   }
 
-  // 🟡 Edit Product
+  // Edit product
   onEdit() {
     if (!this.product) return;
     this.router.navigate(['/admin/products/edit', this.product.id]);
   }
 
-  // 🔴 Delete Product
+  // Delete product
   onDelete() {
     if (!this.product) return;
     const confirmDelete = confirm(
@@ -84,7 +89,7 @@ export class ShowProductComponent implements OnInit {
     });
   }
 
-  // 🔙 Go Back to List
+  // Go back to list
   goBack() {
     this.router.navigate(['/admin/products']);
   }

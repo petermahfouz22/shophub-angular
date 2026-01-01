@@ -1,29 +1,30 @@
 import { Component, OnInit } from '@angular/core';
-import { ProductService } from '../../../../services/product.service';
+import { ProductService, PaginatedProductsResponse } from '../../../../services/product.service';
 import { Product } from '../../../../interfaces/product';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Route, Router, RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { LoaderComponent } from '../../../../shared/loader/loader.component';
+
 @Component({
   selector: 'app-manage-products',
-  imports: [ReactiveFormsModule, CommonModule, FormsModule, RouterLink,LoaderComponent],
+  imports: [ReactiveFormsModule, CommonModule, FormsModule, RouterLink, LoaderComponent],
   templateUrl: './all-products.component.html',
 })
 export class AllProductsComponent implements OnInit {
-  // 🔹 بيانات المنتجات
+  // Product data
   allProducts: Product[] = [];
   products: Product[] = [];
 
-  // 🔹 حالة الواجهة
+  // UI state
   isLoading = false;
   errorMessage = '';
 
-  // 🔹 فلاتر المستخدم
+  // User filters
   searchTerm = '';
   statusFilter = '';
 
-  // 🔹 Pagination
+  // Pagination
   currentPage = 1;
   itemsPerPage = 10;
   totalPages = 1;
@@ -35,13 +36,18 @@ export class AllProductsComponent implements OnInit {
     this.fetchProducts();
   }
 
-  // 🟢 تحميل كل المنتجات مرة واحدة
+  // Load all products
   fetchProducts() {
     this.isLoading = true;
     this.productService.adminGetProducts().subscribe({
-      next: (data) => {
-        this.allProducts = data;
-        this.applyFilters(); // نفلتر ونعمل pagination محلي
+      next: (response: PaginatedProductsResponse) => {
+        // Handle paginated response
+        if (response.data && response.data.data) {
+          this.allProducts = response.data.data;
+          this.totalItems = response.data.total;
+          this.totalPages = response.data.last_page;
+        }
+        this.applyFilters();
         this.isLoading = false;
       },
       error: (err) => {
@@ -51,11 +57,11 @@ export class AllProductsComponent implements OnInit {
     });
   }
 
-  // 🧠 تطبيق الفلاتر
+  // Apply filters
   applyFilters() {
     let filtered = [...this.allProducts];
 
-    // فلترة بالبحث
+    // Search filter
     if (this.searchTerm.trim()) {
       const term = this.searchTerm.toLowerCase();
       filtered = filtered.filter(
@@ -65,55 +71,57 @@ export class AllProductsComponent implements OnInit {
       );
     }
 
-    // فلترة بالحالة
+    // Status filter
     if (this.statusFilter) {
       filtered = filtered.filter((p) => p.status === this.statusFilter);
     }
 
-    // بعد الفلترة نحسب عدد الصفحات
+    // Calculate pagination after filtering
     this.totalItems = filtered.length;
     this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
 
-    // تطبيق pagination محلي
+    // Apply local pagination
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
     this.products = filtered.slice(startIndex, endIndex);
   }
 
-  // 🔍 لما المستخدم يضغط Enter أو Search
+  // Search handler
   onSearch() {
     console.log('Search term:', this.searchTerm);
     this.currentPage = 1;
     this.applyFilters();
   }
 
-  // 🔄 لما يغير الـ status filter
+  // Filter change handler
   onFilterChange() {
     this.currentPage = 1;
     this.applyFilters();
   }
 
-  // 📄 تغيير الصفحة
+  // Page change handler
   onPageChange(page: number) {
     if (page < 1 || page > this.totalPages) return;
     this.currentPage = page;
     this.applyFilters();
   }
 
-  // 🔢 توليد صفحات
+  // Generate page numbers
   getPages(): number[] {
     return Array(this.totalPages)
       .fill(0)
       .map((_, i) => i + 1);
   }
 
-  // 🎨 ألوان الـ status
+  // Status badge styling
   getStatusBadgeClass(status: string) {
     return status === 'active'
       ? 'bg-green-100 text-green-800'
       : 'bg-gray-100 text-gray-800';
   }
+
   onEdit(product: Product) {}
+
   onDelete(product: Product) {
     if (!product?.id) return;
 
@@ -126,9 +134,9 @@ export class AllProductsComponent implements OnInit {
       next: (res) => {
         console.log('✅ Deleted from API:', res);
 
-        // ✨ نحذف المنتج من القائمتين المحلية عشان الواجهة تتحدث فورًا
+        // Remove product from local arrays and update UI
         this.allProducts = this.allProducts.filter((p) => p.id !== product.id);
-        this.applyFilters(); // نعيد تطبيق الفلترة والpagination بناءً على الجديد
+        this.applyFilters();
 
         alert(res.message || 'Product deleted successfully');
       },
@@ -138,6 +146,7 @@ export class AllProductsComponent implements OnInit {
       },
     });
   }
+
   onToggleStatus(product: Product): void {
     const action = product.status === 'active' ? 'deactivate' : 'activate';
 
@@ -147,7 +156,13 @@ export class AllProductsComponent implements OnInit {
           // Update the product status in the local array
           const index = this.products.findIndex((p) => p.id === product.id);
           if (index !== -1) {
-            this.products[index].status = response.product.status;
+            this.products[index].status = response.data.status;
+          }
+
+          // Also update in allProducts
+          const allIndex = this.allProducts.findIndex((p) => p.id === product.id);
+          if (allIndex !== -1) {
+            this.allProducts[allIndex].status = response.data.status;
           }
 
           // Show success message

@@ -1,15 +1,21 @@
 // src/app/admin/components/edit-brand/edit-brand.component.ts
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { BrandService } from '../../../../services/brand.service';
-import { BrandResponse}from'../../../../interfaces/brand';
+import { BrandResponse } from '../../../../interfaces/brand';
+
 @Component({
   selector: 'app-edit-brand',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
-  templateUrl: './edit-brand.component.html'
+  templateUrl: './edit-brand.component.html',
 })
 export class EditBrandComponent implements OnInit {
   brandForm: FormGroup;
@@ -29,7 +35,7 @@ export class EditBrandComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       this.brandId = +params['id'];
       this.loadBrand();
     });
@@ -41,7 +47,7 @@ export class EditBrandComponent implements OnInit {
       description: [''],
       website: ['', [Validators.pattern('https?://.+')]],
       status: ['active', Validators.required],
-      logo: [null]
+      logo: [null],
     });
   }
 
@@ -56,9 +62,9 @@ export class EditBrandComponent implements OnInit {
             name: response.data.name,
             description: response.data.description,
             website: response.data.website,
-            status: response.data.status
+            status: response.data.status,
           });
-          
+
           if (response.data.logo_url) {
             this.logoPreview = response.data.logo_url;
           }
@@ -72,7 +78,7 @@ export class EditBrandComponent implements OnInit {
         console.error('Error loading brand:', error);
         alert('Error loading brand data');
         this.router.navigate(['/admin/brands']);
-      }
+      },
     });
   }
 
@@ -80,7 +86,13 @@ export class EditBrandComponent implements OnInit {
     const file = event.target.files[0];
     if (file) {
       // Validate file type
-      const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/svg+xml'];
+      const validTypes = [
+        'image/jpeg',
+        'image/png',
+        'image/jpg',
+        'image/gif',
+        'image/svg+xml',
+      ];
       if (!validTypes.includes(file.type)) {
         alert('Please select a valid image file (JPEG, PNG, JPG, GIF, SVG)');
         return;
@@ -93,7 +105,7 @@ export class EditBrandComponent implements OnInit {
       }
 
       this.logoFile = file;
-      
+
       // Create preview
       const reader = new FileReader();
       reader.onload = () => {
@@ -119,7 +131,7 @@ export class EditBrandComponent implements OnInit {
     const formData = new FormData();
 
     // Append form data
-    Object.keys(this.brandForm.controls).forEach(key => {
+    Object.keys(this.brandForm.controls).forEach((key) => {
       if (key !== 'logo') {
         const value = this.brandForm.get(key)?.value;
         if (value !== null && value !== undefined) {
@@ -135,7 +147,7 @@ export class EditBrandComponent implements OnInit {
 
     this.brandService.updateBrand(this.brandId, formData).subscribe({
       next: (response: BrandResponse) => {
-        console.log(response)
+        console.log(response);
         this.loading = false;
         if (response.success) {
           alert('Brand updated successfully!');
@@ -147,10 +159,10 @@ export class EditBrandComponent implements OnInit {
       error: (error) => {
         this.loading = false;
         console.error('Error updating brand:', error);
-        
+
         if (error.error?.errors) {
           const errors = error.error.errors;
-          Object.keys(errors).forEach(key => {
+          Object.keys(errors).forEach((key) => {
             alert(`${key}: ${errors[key].join(', ')}`);
           });
         } else if (error.error?.message) {
@@ -158,15 +170,19 @@ export class EditBrandComponent implements OnInit {
         } else {
           alert('Error updating brand. Please try again.');
         }
-      }
+      },
     });
   }
 
   onDelete(): void {
-    if (confirm('Are you sure you want to delete this brand? This action cannot be undone.')) {
+    if (
+      confirm(
+        'Are you sure you want to delete this brand? This action cannot be undone.'
+      )
+    ) {
       this.loading = true;
       this.brandService.deleteBrand(this.brandId).subscribe({
-        next: (response: BrandResponse) => {
+        next: (response) => {
           this.loading = false;
           if (response.success) {
             alert('Brand deleted successfully!');
@@ -178,19 +194,19 @@ export class EditBrandComponent implements OnInit {
         error: (error) => {
           this.loading = false;
           console.error('Error deleting brand:', error);
-          
+
           if (error.error?.message) {
             alert(error.error.message);
           } else {
             alert('Error deleting brand. Please try again.');
           }
-        }
+        },
       });
     }
   }
 
   private markFormGroupTouched(): void {
-    Object.keys(this.brandForm.controls).forEach(key => {
+    Object.keys(this.brandForm.controls).forEach((key) => {
       this.brandForm.get(key)?.markAsTouched();
     });
   }
@@ -198,7 +214,7 @@ export class EditBrandComponent implements OnInit {
   // Check if form has changes
   hasChanges(): boolean {
     if (!this.initialData) return false;
-    
+
     return (
       this.brandForm.get('name')?.value !== this.initialData.name ||
       this.brandForm.get('description')?.value !== this.initialData.description ||
@@ -209,6 +225,10 @@ export class EditBrandComponent implements OnInit {
   }
 
   // Getters for form controls
-  get name() { return this.brandForm.get('name'); }
-  get website() { return this.brandForm.get('website'); }
+  get name() {
+    return this.brandForm.get('name');
+  }
+  get website() {
+    return this.brandForm.get('website');
+  }
 }

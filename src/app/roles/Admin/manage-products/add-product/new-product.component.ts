@@ -9,21 +9,23 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProductService } from '../../../../services/product.service';
 import { Product, Category, Brand } from '../../../../interfaces/product';
+
 @Component({
   selector: 'app-new-product',
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './new-product.component.html',
 })
-export class NewProductComponent {
+export class NewProductComponent implements OnInit {
   productForm: FormGroup;
   categories: Category[] = [];
   brands: Brand[] = [];
   isLoading = false;
   errorMessage = '';
   router = inject(Router);
+
   constructor(
     private fb: FormBuilder,
-    private productService: ProductService //  private router: Router
+    private productService: ProductService
   ) {
     this.productForm = this.createForm();
   }
@@ -50,10 +52,11 @@ export class NewProductComponent {
 
   private loadFormData(): void {
     this.productService.adminGetFormData().subscribe({
-      next: (data) => {
-        console.log(data);
-        this.categories = data.categories;
-        this.brands = data.brands;
+      next: (response) => {
+        console.log(response);
+        // Access categories and brands from response.data
+        this.categories = response.data.categories;
+        this.brands = response.data.brands;
       },
       error: (error) => {
         console.error('Error loading form data:', error);
@@ -69,23 +72,35 @@ export class NewProductComponent {
 
       const formValue = this.productForm.value;
 
-      // Convert gallery string to array
-      const productData: Product = {
-        ...formValue,
-        gallery: formValue.gallery
-          ? formValue.gallery.split(',').map((url: string) => url.trim())
-          : [],
-        price: parseFloat(formValue.price),
-        discount_price: formValue.discount_price
-          ? parseFloat(formValue.discount_price)
-          : undefined,
-        stock: parseInt(formValue.stock, 10),
-      };
+      // Create FormData for multipart/form-data submission
+      const formData = new FormData();
+      formData.append('name', formValue.name);
+      formData.append('description', formValue.description);
+      formData.append('category_id', formValue.category_id);
+      formData.append('brand_id', formValue.brand_id);
+      formData.append('price', formValue.price);
+      formData.append('stock', formValue.stock);
+      formData.append('sku', formValue.sku);
+      formData.append('status', formValue.status);
+      
+      if (formValue.discount_price) {
+        formData.append('discount_price', formValue.discount_price);
+      }
+      if (formValue.image_url) {
+        formData.append('image_url', formValue.image_url);
+      }
+      if (formValue.gallery) {
+        // Convert gallery string to array
+        const galleryArray = formValue.gallery.split(',').map((url: string) => url.trim());
+        galleryArray.forEach((url: string, index: number) => {
+          formData.append(`gallery[${index}]`, url);
+        });
+      }
 
-      this.productService.adminCreateProduct(productData).subscribe({
+      this.productService.adminCreateProduct(formData).subscribe({
         next: (response) => {
           this.isLoading = false;
-          this.router.navigate(['/products']);
+          this.router.navigate(['/admin/products']);
         },
         error: (error) => {
           this.isLoading = false;
